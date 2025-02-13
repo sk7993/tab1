@@ -1,0 +1,15 @@
+Package: tab1
+Type: Package
+Title: Create Publication Quality Table 1
+Version: 0.1.0
+Authors@R: c(
+    person(
+      "Karan", "Shah",
+      email = "karankshah95 [at] gmail.com",
+      role = c("aut", "cre")
+    )
+  )
+Description: Create publication quality Table 1
+License: MIT
+Encoding: UTF-8
+LazyData: true
