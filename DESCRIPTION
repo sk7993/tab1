@@ -10,6 +10,6 @@ Authors@R: c(
     )
   )
 Description: Create publication quality Table 1
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
