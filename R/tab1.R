@@ -1,4 +1,4 @@
-#' Title
+#' Construct table 1
 #'
 #' @param data
 #' @param nonnormal
@@ -96,4 +96,7 @@ tab1 <- function(data,
 tab1(iris, nonnormal = "Petal.Length",
      digits_factor  = 0)
 
+publish_tab1 <- function(){
+
+}
 

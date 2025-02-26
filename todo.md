@@ -1,9 +1,8 @@
 # TODO
 
 - Handle groups/strata
-- Factor vars
-  - 
 - ASD
+- Create function for publishing it
 - Weighted data
-  - Effective sample size
+- Effective sample size
 
