@@ -38,7 +38,7 @@ summ_num_nn <- function(x,
   scale <- stats::quantile(x,
                        c(0.25, 0.75),
                        na.rm = TRUE) |>
-    round(0)
+    round(digits)
 
   # Return
     result <- sprintf("%s [%s%s %s]",
