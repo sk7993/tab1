@@ -1,44 +1,78 @@
+#' Title
+#'
+#' @param data
+#' @param nonnormal
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 tab1 <- function(data,
                  nonnormal = NULL){
+
   if (!is.null(nonnormal) & !is.character(nonnormal)) {
     stop("Nonnormal variables must be input as a character vector")
   }
-  df_num <- data[!names(data) %in% nonnormal]
-  df_num <- df_num[sapply(df_num,
-                          is.numeric)]
 
-  df_num_nn <- data[nonnormal]
+  var_names <- names(data)
+
+  # Numeric variables
+
+  t_num <- rapply(data[setdiff(var_names, nonnormal)],
+                  summ_num,
+                  "numeric",
+                  how = "unlist")
+
+  if (is.null(t_num)) {
+    t_num <- create_summary_df()
+  }
+
+  t_num <- create_summary_df(var = names(t_num),
+                      parent_var = NA,
+                      type = "numeric",
+                      summ = unname(t_num))
+
+  # Non-numeric variables
+
+  if (!is.null(nonnormal)) {
+    t_num_nn <- rapply(data[nonnormal],
+                       summ_num_nn,
+                       how = "unlist")
+
+    t_num_nn <- create_summary_df(var = names(t_num_nn),
+                           parent_var = NA,
+                           type = "numeric_nn",
+                           summ = unname(t_num_nn))
+  } else {
+    t_num_nn <- create_summary_df()
+  }
+
+  # Categorical variables
 
   df_cat <- data[sapply(data,
                         \(x) is.character(x) |
                           is.factor(x))]
 
-  t_num <- sapply(df_num,
-                  summ_num)
+  # t_cat <- lapply(df_cat,
+  #                  summ_cat)
+  #
+  # parent_var <- rep(names(t_cat),
+  #                   sapply(t_cat, nrow))
+  #
+  # t_cat <- do.call("rbind",
+  #                  c(t_cat,
+  #                  make.row.names = FALSE))
+  #
+  # t_cat["parent_var"] <- parent_var
 
-  t_num <- data.frame(var = names(t_num),
-                      type = "numeric",
-                      summ = unname(t_num))
-
-  if (!is.null(nonnormal)) {
-    t_num_nn <- sapply(df_num_nn,
-                       summ_num_nn)
-
-    t_num_nn <- data.frame(var = names(t_num_nn),
-                           type = "numeric (nn)",
-                           summ = unname(t_num_nn))
-  }
+  t_cat <- create_summary_df()
 
 
-  t_cat <- lapply(df_cat,
-                   summ_cat)
-
-  print(ls())
-
-  list(t_num,
-       if (exists("t_num_nn")) t_num_nn,
-       t_cat)
+  rbind(t_num,
+        t_num_nn,
+        t_cat)
 }
 
-tab1(mtcars,
-     nonnormal = "cyl")
+tab1(iris, nonnormal = "Petal.Length")
+
+

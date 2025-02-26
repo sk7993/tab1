@@ -1,29 +1,28 @@
-#' Title
+#' Summarize numeric variables
 #'
 #' @param x
 #' @param digits
-#' @param loc
-#' @param disp
-#' @param delim
 #'
 #' @returns
 #' @export
 #'
 #' @examples
 summ_num <- function(x, digits = 2) {
-  l <- base::mean(x, na.rm = TRUE) |>
+  loc <- base::mean(x, na.rm = TRUE) |>
     round(digits)
-  s <- stats::sd(x, na.rm = TRUE) |>
+  scale <- stats::sd(x, na.rm = TRUE) |>
     round(digits)
 
   sprintf("%s (%s)",
-          l,
-          s)
+          loc,
+          scale)
 }
 
-#' Title
+#' Summarize non-normal numeric variables
 #'
 #' @param x
+#' @param digits
+#' @param delim
 #'
 #' @returns
 #' @export
@@ -31,31 +30,28 @@ summ_num <- function(x, digits = 2) {
 #' @examples
 summ_num_nn <- function(x,
                         digits = 0,
-                        delim = 1){
+                        delim = ","){
 
-  l <- stats::median(x,
+  loc <- stats::median(x,
                      na.rm = TRUE) |>
     round(digits)
-  s <- stats::quantile(x,
+  scale <- stats::quantile(x,
                        c(0.25, 0.75),
                        na.rm = TRUE) |>
     round(0)
 
-  if (delim == 1) {
-    sprintf("%s [%s, %s]",
-            l,
-            s[[1]],
-            s[[2]])
-  } else if (delim == 2) {
-    sprintf("%s [%s - %s]",
-            l,
-            s[[1]],
-            s[[2]])
-  }
+  # Return
+    result <- sprintf("%s [%s%s %s]",
+            loc,
+            scale[[1]],
+            delim,
+            scale[[2]])
+
+    return(result)
 
 }
 
-#' Title
+#' Summarize categorical variables
 #'
 #' @param x
 #' @param digits
@@ -75,11 +71,22 @@ summ_cat <- function(x,
 
   s <- sprintf("%s (%s%%)",
           tab,
-          prop)
+          prop) |>
+    setNames(names(tab))
 
-  d <- data.frame(var = names(tab),
-                  type = "subcat",
-                  summ = s)
-  d
+  return(s)
 }
+
+create_summary_df <- function(var = NULL,
+                              parent_var = NULL,
+                              type = NULL,
+                              summ = NULL){
+  data.frame(
+    "var" = var,
+    "parent_var" = parent_var,
+    "type" = type,
+    "summ" = summ
+  )
+}
+
 
