@@ -1,4 +1,4 @@
-asd_num <- function(x1, x2 = NULL, grp = NULL){
+smd_num <- function(x1, x2 = NULL, grp = NULL, abs = TRUE){
 
   if (is.null(x2) & is.null(grp)) {
     stop("Must specify either x2 or grp.")
@@ -16,12 +16,17 @@ asd_num <- function(x1, x2 = NULL, grp = NULL){
   mu1 <- mean(x1, na.rm = TRUE)
   mu2 <- mean(x2, na.rm = TRUE)
   d = mu2 - mu1
-  sd_pooled <- sqrt((var(x1) + var(x2))/2)
+  if (abs == TRUE) {
+    d = abs(d)
+  }
 
-  return(d/sd_pooled)
+  sd_pooled <- sqrt((var(x1) + var(x2))/2)
+  smd = d/sd_pooled
+
+  return(smd)
 }
 
-asd_num_nn <- function(x1, x2 = NULL, grp = NULL){
+smd_num_nn <- function(x1, x2 = NULL, grp = NULL, ...){
   if (is.null(x2) & is.null(grp)) {
     stop("Must specify either x2 or grp.")
   }
@@ -38,10 +43,33 @@ asd_num_nn <- function(x1, x2 = NULL, grp = NULL){
     x1 <- rank(x1)
   }
 
-  asd_num(x1, x2, grp)
+  return(smd_num(x1, x2, grp, ...))
 
 }
 
-asd_cat <- function(x1, x2, grp){
+smd_fac <- function(x1, grp){
 
+  tbl <- table(x1, grp) |>
+    prop.table(2)
+
+  # Differences in proportions
+  x1_p <- tbl[,1][-1]
+  x2_p <- tbl[,2][-1]
+
+  d <- x2_p - x1_p
+
+  # Covariance matrix
+  dgl <- (x1_p*(1 - x1_p) + x2_p*(1 - x2_p))/2
+  covar <- (-1*outer(x1_p, x1_p) + -1*outer(x2_p, x2_p))/2
+  diag(covar) <- dgl
+
+  # Calculate ASD
+  smd_fac <- sqrt(drop(t(d) %*% solve(covar) %*% d))
+  return(smd_fac)
 }
+
+
+tableone::CreateCatTable("carb", "am", mtcars, test = FALSE) |>
+  tableone::ExtractSmd()
+
+smd_fac(mtcars$carb, mtcars$am)
