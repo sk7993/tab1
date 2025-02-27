@@ -60,7 +60,7 @@ summ_num_nn <- function(x,
 #' @export
 #'
 #' @examples
-summ_cat <- function(x,
+summ_fac <- function(x,
                      digits = 0){
   tab <- table(x) |>
     round(digits)
@@ -72,7 +72,7 @@ summ_cat <- function(x,
   s <- sprintf("%s (%s%%)",
           tab,
           prop) |>
-    setNames(names(tab))
+    stats::setNames(names(tab))
 
   return(s)
 }
