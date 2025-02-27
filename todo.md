@@ -2,8 +2,9 @@
 
 - Handle groups/strata
 - ASD
-- Create function for publishing it
+  - Support for more than one group?
+- Create function for making it publication ready
 - Weighted data
-- Effective sample size
+-   Effective sample size
 - Add support for labels
   - Units?

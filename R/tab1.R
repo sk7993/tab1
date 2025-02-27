@@ -81,7 +81,7 @@ tab1_num <- function(data, opts = NULL) {
   return(res)
 }
 
-#' Table 1 for skewed numeric variables
+#' Table 1 for skewed/non-normal numeric variables
 #'
 #' @param data
 #' @param opts
@@ -131,7 +131,6 @@ tab1_num_nn <- function(data, opts = NULL) {
 tab1_fac <- function(data, opts = NULL) {
 
   # Checks
-
   if (nrow(data) == 0 |
       ncol(data) == 0) {
     return(create_summary_df())
