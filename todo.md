@@ -8,3 +8,4 @@
 -   Effective sample size
 - Add support for labels
   - Units?
+- Missing data

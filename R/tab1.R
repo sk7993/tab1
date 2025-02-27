@@ -17,8 +17,7 @@ tab1 <- function(data,
     stop("Nonnormal variables must be input as a character vector")
   }
 
-  # Change character variables to factor
-
+  # Change character variables to factor----------
   var_names <- names(data)
 
   data <- rapply(data,
@@ -26,8 +25,7 @@ tab1 <- function(data,
                  "character",
                  how = "replace")
 
-  # Get summary tables
-
+  # Get summary tables--------------
   t_num <- tab1_num(data[setdiff(var_names, nonnormal)],
                       opts_num)
 
@@ -37,7 +35,7 @@ tab1 <- function(data,
   t_fac <- tab1_fac(data,
                       opts_cat)
 
-  # Combine summary tables
+  # Combine summary tables-----------------
   rbind(t_num,
         t_num_nn,
         t_fac)
@@ -92,8 +90,7 @@ tab1_num <- function(data, opts = NULL) {
 #' @examples
 tab1_num_nn <- function(data, opts = NULL) {
 
-  # Checks
-
+  # Checks-------------------
   if (nrow(data) == 0 |
       ncol(data) == 0) {
     return(create_summary_df())
@@ -103,7 +100,7 @@ tab1_num_nn <- function(data, opts = NULL) {
     return(create_summary_df())
   }
 
-  # Output summary
+  # Output summary--------------------------
   res <- rapply(data,
          \(x) do.call(summ_num_nn,
                       c(list(x), opts)),
@@ -130,7 +127,7 @@ tab1_num_nn <- function(data, opts = NULL) {
 #' @examples
 tab1_fac <- function(data, opts = NULL) {
 
-  # Checks
+  # Checks---------------------------
   if (nrow(data) == 0 |
       ncol(data) == 0) {
     return(create_summary_df())
@@ -140,7 +137,7 @@ tab1_fac <- function(data, opts = NULL) {
     return(create_summary_df())
   }
 
-  # Output summary
+  # Output summary-----------------------
   summ_cat_df <- function(x) {
     s <- do.call(summ_fac, c(list(x), opts))
 
@@ -154,19 +151,25 @@ tab1_fac <- function(data, opts = NULL) {
     return(s)
   }
 
+  # Summarize every factor variable in  the dataset----
+  # Outputs list whose elements are dataframes
   res <- rapply(data,
                   summ_cat_df,
                   "factor",
                   how = "list"
                   )
+  # Remove NULL elements from the list----
+  # (i.e., non-factor variables)
   res <- Filter(Negate(is.null), res)
 
+  # Replace parent_var with variable name----
+  # For each list element
   res <- lapply(seq_along(res),
                   \(x) {
                     res[[x]][["parent_var"]] = names(res)[[x]]
                     res[[x]]
                   })
-
+  # Construct dataframe from list
   res <- do.call("rbind",
                    c(res,
                      make.row.names = FALSE))
