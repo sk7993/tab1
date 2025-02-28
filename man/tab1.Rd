@@ -7,9 +7,9 @@
 tab1(
   data,
   nonnormal = NULL,
-  digits_num = 1,
-  digits_num_nn = 0,
-  digits_factor = 0
+  opts_num = NULL,
+  opts_num_nn = NULL,
+  opts_cat = NULL
 )
 }
 \arguments{

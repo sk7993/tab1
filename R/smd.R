@@ -1,3 +1,14 @@
+#' SMD for numeric variables
+#'
+#' @param x1 Numeric vector of data values
+#' @param x2 Optional numeric vector if `grp` is not specified.
+#' @param grp Variable specifying grouping for for data values
+#' @param abs Specify whether to return absolute values or not (default is TRUE).
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 smd_num <- function(x1, x2 = NULL, grp = NULL, abs = TRUE){
 
   if (is.null(x2) & is.null(grp)) {
@@ -26,6 +37,17 @@ smd_num <- function(x1, x2 = NULL, grp = NULL, abs = TRUE){
   return(smd)
 }
 
+#' SMD for skewed/non-normal numeric variables
+#'
+#' @param x1 Numeric vector of data values
+#' @param x2 Optional numeric vector if `grp` is not specified.
+#' @param grp Variable specifying grouping for for data values
+#' @param ... Additional arguments passed to `smd_num`.
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 smd_num_nn <- function(x1, x2 = NULL, grp = NULL, ...){
   if (is.null(x2) & is.null(grp)) {
     stop("Must specify either x2 or grp.")
@@ -47,9 +69,19 @@ smd_num_nn <- function(x1, x2 = NULL, grp = NULL, ...){
 
 }
 
+
+#' SMD for categorical variables
+#'
+#' @param x
+#' @param grp
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 smd_fac <- function(x1, grp){
 
-  tbl <- table(x1, grp) |>
+  tbl <- table(x, grp) |>
     prop.table(2)
 
   # Differences in proportions

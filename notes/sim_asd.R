@@ -2,7 +2,7 @@ sim_asd <- function(n, b){
   asd <- vector("numeric", b)
 
   for (i in seq_len(b)) {
-    asd[i] <- asd_cat(c(rbinom(n, 5, 0.5),
+    asd[i] <- smd_cat(c(rbinom(n, 5, 0.5),
                       rbinom(n, 5, 0.5)),
                       rep(c(0,1), each = n)
     )
