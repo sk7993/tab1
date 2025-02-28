@@ -1,11 +1,14 @@
 # TODO
 
-- Handle groups/strata
-- ASD
-  - Support for more than one group?
-- Create function for making it publication ready
-- Weighted data
--   Effective sample size
-- Add support for labels
-  - Units?
-- Missing data
+- tab1 
+  - Add support for groups
+  - Add support for weighted data
+    - Effective sample size
+  - Add support for labels
+- SMD
+  - Define basic SMD - DONE
+  - Add support for multiple groups
+  - Support weighted data
+- pub_tab1
+  - Create function for making publication ready table
+

@@ -99,9 +99,3 @@ smd_fac <- function(x1, grp){
   smd_fac <- sqrt(drop(t(d) %*% solve(covar) %*% d))
   return(smd_fac)
 }
-
-
-tableone::CreateCatTable("carb", "am", mtcars, test = FALSE) |>
-  tableone::ExtractSmd()
-
-smd_fac(mtcars$carb, mtcars$am)
