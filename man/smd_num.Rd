@@ -4,11 +4,23 @@
 \alias{smd_num}
 \title{SMD for numeric variables}
 \usage{
-smd_num(x1, x2 = NULL, grp = NULL, abs = TRUE)
+smd_num(x, grp, abs = TRUE)
 }
 \arguments{
-\item{abs}{}
+\item{x}{A numeric vector}
+
+\item{grp}{A factor of same length as `x` specifying groups.
+If not a factor, then the vector will be coerced.}
+
+\item{abs}{Logical specifying whether to return absolute SMD (default is TRUE).}
+}
+\value{
+A named numeric vector of length `choose(unique(grp), 2)`.
 }
 \description{
-SMD for numeric variables
+Computes standardized mean difference for numeric variables.
+}
+\details{
+Standardized mean difference is calculated as the difference in means
+divided by the pooled standard deviation.
 }

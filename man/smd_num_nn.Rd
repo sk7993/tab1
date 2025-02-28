@@ -4,10 +4,14 @@
 \alias{smd_num_nn}
 \title{SMD for skewed/non-normal numeric variables}
 \usage{
-smd_num_nn(x1, x2 = NULL, grp = NULL, ...)
+smd_num_nn(x, grp, ...)
 }
 \arguments{
-\item{...}{}
+\item{x}{Numeric vector of data values}
+
+\item{grp}{Variable specifying grouping for for data values}
+
+\item{...}{Additional arguments passed to `smd_num`.}
 }
 \description{
 SMD for skewed/non-normal numeric variables

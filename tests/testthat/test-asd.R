@@ -1,7 +1,7 @@
 test_that("ASD is calculated correctly", {
 
-  expect_equal(asd_cat(mtcars$cyl[mtcars$am == 0],
-                                 mtcars$cyl[mtcars$am == 1]) |>
+  expect_equal(smd_fac(datasets::mtcars$cyl,
+                       datasets::mtcars$am) |>
                  round(3),
                1.251)
 })

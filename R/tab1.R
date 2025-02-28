@@ -36,9 +36,9 @@ tab1 <- function(data,
                       opts_cat)
 
   # Combine summary tables-----------------
-  rbind(t_num,
+  return(rbind(t_num,
         t_num_nn,
-        t_fac)
+        t_fac))
 }
 
 #' Table 1 for numeric variables
