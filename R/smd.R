@@ -68,7 +68,7 @@ smd_num <- function(x, grp, abs = TRUE){
 #' @examples
 smd_num_nn <- function(x, grp, ...){
 
-  return(smd_num(rank(x1), grp, ...))
+  return(smd_num(rank(x), grp, ...))
 
 }
 

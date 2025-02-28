@@ -1,4 +1,4 @@
-test_that("ASD is calculated correctly", {
+test_that("SMD is calculated correctly", {
 
   expect_equal(smd_fac(datasets::mtcars$cyl,
                        datasets::mtcars$am) |>
