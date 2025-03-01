@@ -28,25 +28,12 @@ smd_num <- function(x, grp, abs = TRUE){
  if (!is.factor(grp)) {
    grp <- factor(grp)
  }
-
-  # Define function for computing ASD-----
-  compute_smd <- function(x1, x2, abs) {
-    mu1 <- mean(x1, na.rm = TRUE)
-    mu2 <- mean(x2, na.rm = TRUE)
-    diff <- mu2 - mu1
-    if (abs == TRUE) {
-      diff <- abs(diff)
-    }
-    pooled_sd <- sqrt((var(x1, na.rm = TRUE) + var(x2, na.rm = TRUE)) / 2)
-    return(diff / pooled_sd)
-  }
-
-  # Compute pairwise ASD for each group------
+  # Compute pairwise SMD for each group------
   x_split <- split(x, grp)
   smd <- combn(levels(grp), 2, FUN = \(p) {
     g1 <- p[1]
     g2 <- p[2]
-    res <- compute_smd(x_split[[g1]], x_split[[g2]], abs)
+    res <- compute_smd_num(x_split[[g1]], x_split[[g2]], abs)
     names(res) <- sprintf("%s vs %s", g1, g2)
     return(res)
   },
@@ -54,6 +41,29 @@ smd_num <- function(x, grp, abs = TRUE){
     unlist()
 
   return(smd)
+}
+
+
+
+#' SMD computation for numeric vectors
+#'
+#' @param x1
+#' @param x2
+#' @param abs
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+compute_smd_num <- function(x1, x2, abs) {
+  mu1 <- mean(x1, na.rm = TRUE)
+  mu2 <- mean(x2, na.rm = TRUE)
+  diff <- mu2 - mu1
+  if (abs == TRUE) {
+    diff <- abs(diff)
+  }
+  pooled_sd <- sqrt((var(x1, na.rm = TRUE) + var(x2, na.rm = TRUE)) / 2)
+  return(diff / pooled_sd)
 }
 
 #' SMD for skewed/non-normal numeric variables
@@ -84,13 +94,55 @@ smd_num_nn <- function(x, grp, ...){
 #' @examples
 smd_fac <- function(x, grp){
 
-  tbl <- table(x, grp) |>
-    prop.table(2)
+  if (!is.factor(x)) {
+    stop("`x` must be a factor variable.")
+  }
 
-  # Differences in proportions
-  x1_p <- tbl[,1][-1]
-  x2_p <- tbl[,2][-1]
+  if (length(x) != length(grp)) {
+    stop("`x` and `grp` vectors must be of equal length.")
+  }
 
+  if (length(unique(grp)) < 2) {
+    stop("At least two groups are needed to compute SMD.")
+  }
+
+  # Coerce grouping variable to factor-----
+    if (!is.factor(grp)) {
+      grp <- factor(grp)
+    }
+
+ # Compute pairwise ASD for each group------
+  x_split <- split(x, grp)
+  smd <- combn(levels(grp), 2, FUN = \(p) {
+    g1 <- p[1]
+    g2 <- p[2]
+    res <- compute_smd_fac(x_split[[g1]], x_split[[g2]])
+    names(res) <- sprintf("%s vs %s", g1, g2)
+    return(res)
+  },
+  simplify = FALSE) |>
+    unlist()
+
+  return(smd)
+}
+
+smd_fac(factor(mtcars$cyl),
+        mtcars$am)
+
+#' SMD computation for factor variables
+#'
+#' @param x1
+#' @param x2
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+compute_smd_fac <- function(x1, x2){
+
+  # Diff in proportions
+  x1_p <- prop.table(table(x1))[-1]
+  x2_p <- prop.table(table(x2))[-1]
   d <- x2_p - x1_p
 
   # Covariance matrix
@@ -99,6 +151,8 @@ smd_fac <- function(x, grp){
   diag(covar) <- dgl
 
   # Calculate ASD
-  smd_fac <- sqrt(drop(t(d) %*% solve(covar) %*% d))
-  return(smd_fac)
+  smd <- sqrt(drop(t(d) %*% solve(covar) %*% d))
+  return(smd)
 }
+
+
