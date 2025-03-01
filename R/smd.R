@@ -1,3 +1,6 @@
+smd <- function(data, nonnormal){
+
+}
 #' SMD for numeric variables
 #'
 #' Computes standardized mean difference for numeric variables.
@@ -34,7 +37,7 @@ smd_num <- function(x, grp, abs = TRUE){
     g1 <- p[1]
     g2 <- p[2]
     res <- compute_smd_num(x_split[[g1]], x_split[[g2]], abs)
-    names(res) <- sprintf("%s vs %s", g1, g2)
+    names(res) <- sprintf("smd_%s vs %s", g1, g2)
     return(res)
   },
   simplify = FALSE) |>
@@ -115,7 +118,7 @@ smd_fac <- function(x, grp){
     g1 <- p[1]
     g2 <- p[2]
     res <- compute_smd_fac(x_split[[g1]], x_split[[g2]])
-    names(res) <- sprintf("%s vs %s", g1, g2)
+    names(res) <- sprintf("smd_%s vs %s", g1, g2)
     return(res)
   },
   simplify = FALSE) |>

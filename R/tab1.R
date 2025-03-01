@@ -20,8 +20,13 @@ tab1 <- function(data, grp, ...) {
 #' This function is the workhorse of the `tab1` function but not intended
 #' to be called directly.
 #'
-#' @param data
-#' @param nonnormal
+#' @param data data
+#' @param nonnormal Character vector specifiying nonnormal variables.
+#' @param opts_num  (List) Options for numeric variables passed to
+#' `sum_num`.
+#' @param opts_num_nn (List) Options for nonnormal numeric variables
+#' passed to `summ_num_nn`.
+#' @param opts_fac (List) Options for factorv variables passed to `summ_fac`.
 #'
 #' @returns
 #'
@@ -30,7 +35,7 @@ tab1_ug <- function(data,
                  nonnormal = NULL,
                  opts_num = NULL,
                  opts_num_nn = NULL,
-                 opts_cat = NULL){
+                 opts_fac = NULL){
 
   if (!is.null(nonnormal) & !is.character(nonnormal)) {
     stop("Nonnormal variables must be input as a character vector")
@@ -52,7 +57,7 @@ tab1_ug <- function(data,
                             opts_num_nn)
 
   t_fac <- tab1_fac(data,
-                      opts_cat)
+                      opts_fac)
 
   # Combine summary tables-----------------
   return(rbind(t_num,
