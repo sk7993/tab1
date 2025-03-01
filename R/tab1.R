@@ -1,13 +1,32 @@
-#' Construct table 1
+tab1 <- function(data, grp, ...) {
+  tbl1 <- by(data, grp, \(x) do.call("tab1_ug", c(list(x), ...))) |>
+    rbind2(id = "group") |>
+    # Change from long to wide format
+    reshape(
+      direction = "wide",
+      idvar = c("var"),
+      timevar = "group",
+      v.names = "summ",
+      sep = "_"
+    )
+
+  # Add SMD
+
+  return(tbl1)
+}
+
+#' Construct table 1 (without groups)
+#'
+#' This function is the workhorse of the `tab1` function but not intended
+#' to be called directly.
 #'
 #' @param data
 #' @param nonnormal
 #'
 #' @returns
-#' @export
 #'
 #' @examples
-tab1 <- function(data,
+tab1_ug <- function(data,
                  nonnormal = NULL,
                  opts_num = NULL,
                  opts_num_nn = NULL,
@@ -47,7 +66,6 @@ tab1 <- function(data,
 #' @param opts
 #'
 #' @returns
-#' @export
 #'
 #' @examples
 tab1_num <- function(data, opts = NULL) {
@@ -85,7 +103,6 @@ tab1_num <- function(data, opts = NULL) {
 #' @param opts
 #'
 #' @returns
-#' @export
 #'
 #' @examples
 tab1_num_nn <- function(data, opts = NULL) {
@@ -122,7 +139,6 @@ tab1_num_nn <- function(data, opts = NULL) {
 #' @param opts
 #'
 #' @returns
-#' @export
 #'
 #' @examples
 tab1_fac <- function(data, opts = NULL) {
@@ -137,43 +153,17 @@ tab1_fac <- function(data, opts = NULL) {
     return(create_summary_df())
   }
 
-  # Output summary-----------------------
-  summ_cat_df <- function(x) {
-    s <- do.call(summ_fac, c(list(x), opts))
-
-    s <- create_summary_df(
-      var = names(s),
-      parent_var = NA,
-      type = "factor",
-      summ = unname(s)
-    )
-
-    return(s)
-  }
-
   # Summarize every factor variable in  the dataset----
   # Outputs list whose elements are dataframes
   res <- rapply(data,
-                  summ_cat_df,
+                  \(x) do.call("summ_fac_df", c(list(x), opts)),
                   "factor",
                   how = "list"
                   )
   # Remove NULL elements from the list----
   # (i.e., non-factor variables)
   res <- Filter(Negate(is.null), res)
-
-  # Replace parent_var with variable name----
-  # For each list element
-  res <- lapply(seq_along(res),
-                  \(x) {
-                    res[[x]][["parent_var"]] = names(res)[[x]]
-                    res[[x]]
-                  })
-  # Construct dataframe from list
-  res <- do.call("rbind",
-                   c(res,
-                     make.row.names = FALSE))
+  res <- rbind2(res, "parent_var")
 
   return(res)
-
 }

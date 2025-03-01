@@ -43,9 +43,7 @@ smd_num <- function(x, grp, abs = TRUE){
   return(smd)
 }
 
-
-
-#' SMD computation for numeric vectors
+#' SMD computation for numeric vectors (supports only two groups)
 #'
 #' @param x1
 #' @param x2
@@ -126,10 +124,7 @@ smd_fac <- function(x, grp){
   return(smd)
 }
 
-smd_fac(factor(mtcars$cyl),
-        mtcars$am)
-
-#' SMD computation for factor variables
+#' SMD computation for factor variables (supports only two groups)
 #'
 #' @param x1
 #' @param x2

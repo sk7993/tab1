@@ -13,7 +13,7 @@
   - Define basic SMD functions - DONE
   - Add support for any # of groups - DONE
     - Add support for summarizing ASDs (min, max etc.)
-  - Support weighted data
+  - Add support for weighted data
 - pub_tab1
   - Create function for making publication ready table
   - Support conditional formatting for ASD
