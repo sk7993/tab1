@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-summ_num <- function(x, digits = 2) {
+summ_num <- function(x, digits = 2, test = TRUE) {
   loc <- base::mean(x, na.rm = TRUE) |>
     round(digits)
   scale <- stats::sd(x, na.rm = TRUE) |>

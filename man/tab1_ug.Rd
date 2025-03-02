@@ -2,24 +2,30 @@
 % Please edit documentation in R/tab1.R
 \name{tab1_ug}
 \alias{tab1_ug}
-\title{Construct table 1 (without groups)}
+\title{Construct table 1 (no groups)}
 \usage{
 tab1_ug(
   data,
   nonnormal = NULL,
   opts_num = NULL,
   opts_num_nn = NULL,
-  opts_cat = NULL
+  opts_fac = NULL
 )
 }
 \arguments{
 \item{data}{data}
 
-\item{nonnormal}{data}
+\item{nonnormal}{Character vector specifiying nonnormal variables.}
 
-\item{xyz}{}
+\item{opts_num}{(List) Options for numeric variables passed to
+`sum_num`.}
+
+\item{opts_num_nn}{(List) Options for nonnormal numeric variables
+passed to `summ_num_nn`.}
+
+\item{opts_fac}{(List) Options for factorv variables passed to `summ_fac`.}
 }
 \description{
-This function is the workhorse of the `tab1` function but not intended
+This function is the workhorse of the `tab1` function. It is not intended
 to be called directly.
 }

@@ -21,13 +21,15 @@ tab1 <- function(data, grp, vars = NULL, nonnormal = NULL,
     stop("`grp` variable not found in `data`.")
   }
 
+  # Subset data based on specified vars--------------
   data_sub <- data[names(data) != grp]
 
   if (!is.null(vars)) {
     data_sub <- data_sub[vars]
   }
 
-  tbl1 <- by(data_sub,
+  # Get summary stats by group
+  bl1 <- by(data_sub,
              data[[grp]],
              \(x) do.call("tab1_ug", c(list(x), nonnormal,
                                                   opts))) |>
@@ -41,22 +43,22 @@ tab1 <- function(data, grp, vars = NULL, nonnormal = NULL,
       sep = "_"
     )
 
-  # Construct SMD table
-
+  # Get SMD by group
   data_sub[[grp]] <- data[[grp]]
 
   smd <- smd(data_sub,
              grp,
              nonnormal)
-  # Combine sumamry and SMD table
+
+  # Combine summary and SMD by group
   if (!is.null(smd[[1]])) {
 
-    res <- merge(tbl1[tbl1$type %in% c("numeric", "numeric_nn"),],
+    res1 <- merge(tbl1[tbl1$type %in% c("numeric", "numeric_nn"),],
                  smd[[1]],
                  by = "var",
                  all.x = TRUE)
   } else {
-    res <- NULL
+    res1 <- NULL
   }
 
   if (!is.null(smd[[2]])){
@@ -69,7 +71,7 @@ tab1 <- function(data, grp, vars = NULL, nonnormal = NULL,
   }
 
   return(do.call("rbind",
-                 list(res, res2))
+                 list(res1, res2))
   )
 }
 
@@ -131,7 +133,9 @@ tab1_ug <- function(data,
 #' @returns
 #'
 #' @examples
-tab1_num <- function(data, opts = NULL) {
+tab1_num <- function(data, digits = 2, ...) {
+
+  args <- as.list(match.call())[-(1:2)]
 
   # Checks
 
@@ -148,7 +152,7 @@ tab1_num <- function(data, opts = NULL) {
 
   res <- rapply(data,
          \(x) do.call(summ_num,
-                      c(list(x), opts)),
+                      c(list(x), args)),
          "numeric",
          how = "unlist")
 
@@ -196,7 +200,7 @@ tab1_num_nn <- function(data, opts = NULL) {
 }
 
 
-#' Categorical Table 1
+#' Table 1 for factor variables
 #'
 #' @param data
 #' @param opts

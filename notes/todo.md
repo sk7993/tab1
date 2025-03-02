@@ -1,5 +1,7 @@
 # TODO
 
+- General
+   - Do a better job of organizing parameter passing between functions
 - tab1 
   - Add support for groups - DONE
   - Integrate SMD reporting DONE
@@ -17,4 +19,5 @@
   - Conditional precision/rounding based on value
     - E.g., Don't accidentally round values < 1 to 0
   - Support conditional formatting for ASD
-
+- summary fxns
+  - add support for arbitrary functions and formatting
