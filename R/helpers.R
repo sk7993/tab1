@@ -18,10 +18,14 @@ rbind2 <- function(df_list, id_col = "id"){
 
   # Add a column to each data frame indicating its ID (list element name)
   df_list <- lapply(names(df_list), function(nm) {
-    df_list[[nm]][[id_col]] <- nm
-    df_list[[nm]]
+    df <- df_list[[nm]]
+    df[[id_col]] <- nm
+    df
   })
-  df_list <- do.call(rbind, c(df_list,
+  res <- do.call(rbind, c(df_list,
                               make.row.names = FALSE))
-  return(df_list)
+
+  sel_var <- c(id_col, names(res)[-ncol(res)])
+  res <- res[,sel_var]
+  return(res)
 }

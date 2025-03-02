@@ -1,5 +1,36 @@
-tab1 <- function(data, grp, ...) {
-  tbl1 <- by(data, grp, \(x) do.call("tab1_ug", c(list(x), ...))) |>
+#' Create Table 1
+#'
+#' @param data
+#' @param grp
+#' @param vars
+#' @param nonnormal
+#' @param opts
+#'
+#' @returns
+#' @export
+#'
+#' @examples
+tab1 <- function(data, grp, vars = NULL, nonnormal = NULL,
+                 opts = NULL) {
+
+  if (!is.character(grp) | length(grp) != 1) {
+    stop("`grp` must be a character vector of length 1.")
+  }
+
+  if (is.null(data[[grp]])) {
+    stop("`grp` variable not found in `data`.")
+  }
+
+  data_sub <- data[names(data) != grp]
+
+  if (!is.null(vars)) {
+    data_sub <- data_sub[vars]
+  }
+
+  tbl1 <- by(data_sub,
+             data[[grp]],
+             \(x) do.call("tab1_ug", c(list(x), nonnormal,
+                                                  opts))) |>
     rbind2(id = "group") |>
     # Change from long to wide format
     reshape(
@@ -10,14 +41,41 @@ tab1 <- function(data, grp, ...) {
       sep = "_"
     )
 
-  # Add SMD
+  # Construct SMD table
 
-  return(tbl1)
+  data_sub[[grp]] <- data[[grp]]
+
+  smd <- smd(data_sub,
+             grp,
+             nonnormal)
+  # Combine sumamry and SMD table
+  if (!is.null(smd[[1]])) {
+
+    res <- merge(tbl1[tbl1$type %in% c("numeric", "numeric_nn"),],
+                 smd[[1]],
+                 by = "var",
+                 all.x = TRUE)
+  } else {
+    res <- NULL
+  }
+
+  if (!is.null(smd[[2]])){
+    res2 <- merge(tbl1[tbl1$type == "factor",],
+                  smd[[2]],
+                  by = "parent_var",
+                  all.x = TRUE)
+  } else {
+    res2 <- NULL
+  }
+
+  return(do.call("rbind",
+                 list(res, res2))
+  )
 }
 
-#' Construct table 1 (without groups)
+#' Construct table 1 (no groups)
 #'
-#' This function is the workhorse of the `tab1` function but not intended
+#' This function is the workhorse of the `tab1` function. It is not intended
 #' to be called directly.
 #'
 #' @param data data

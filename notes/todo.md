@@ -2,8 +2,8 @@
 
 - tab1 
   - Add support for groups - DONE
-  - Integrate SMD reporting
-    - Create SMD function that takes in a dataframe
+  - Integrate SMD reporting DONE
+    - Create SMD function that takes in a dataframe DONE
   - Add support for weighted data
     - Effective sample size
 - SMD

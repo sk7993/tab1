@@ -1,6 +1,62 @@
-smd <- function(data, nonnormal){
+smd <- function(data, grp, nonnormal = NULL){
 
+  if (!is.character(grp) | length(grp) != 1) {
+    stop("`grp` must be a character vector of length 1.")
+  }
+
+  if (is.null(data[[grp]])) {
+    stop("`grp` variable not found in `data`.")
+  }
+
+  data_sub <- data[names(data) != grp]
+
+  f1 <- function(x){
+    x |>
+      as.list() |>
+      list2DF()
+  }
+
+  res_num <- rapply(data[setdiff(names(data_sub), nonnormal)],
+                    smd_num,
+                    "numeric",
+                    how = "list",
+                    grp = data[[grp]]
+                    )
+
+  res_num_nn <- rapply(data_sub[nonnormal],
+                       smd_num_nn,
+                       "numeric",
+                       how = "list",
+                       grp = data[[grp]])
+
+  res_fac <- rapply(data_sub,
+                    smd_fac,
+                    "factor",
+                    how = "list",
+                    grp = data[[grp]]
+                    )
+
+  res1 <- c(res_num, res_num_nn)
+
+  if (all(sapply(res1, is.null))) {
+    res1 <- NULL
+  } else {
+    res1 <- Filter(Negate(is.null), res1) |>
+      lapply(f1) |>
+      rbind2("var")
+  }
+
+  if (all(sapply(res_fac, is.null))) {
+    res2 <- NULL
+  } else {
+    res2 <- Filter(Negate(is.null), res_fac) |>
+      lapply(f1) |>
+      rbind2("parent_var")
+  }
+
+  return(list(res1, res2))
 }
+
 #' SMD for numeric variables
 #'
 #' Computes standardized mean difference for numeric variables.
@@ -96,7 +152,17 @@ smd_num_nn <- function(x, grp, ...){
 smd_fac <- function(x, grp){
 
   if (!is.factor(x)) {
-    stop("`x` must be a factor variable.")
+    x <- factor(x)
+    warning("Coercing `x` to factor variable")
+  }
+
+  if (!is.factor(grp)) {
+    grp <- factor(grp)
+  }
+
+  if (identical(x, grp)) {
+    warning("`x` and `grp` cannot be identical variables. Returning NULL.")
+    return(NULL)
   }
 
   if (length(x) != length(grp)) {
@@ -106,11 +172,6 @@ smd_fac <- function(x, grp){
   if (length(unique(grp)) < 2) {
     stop("At least two groups are needed to compute SMD.")
   }
-
-  # Coerce grouping variable to factor-----
-    if (!is.factor(grp)) {
-      grp <- factor(grp)
-    }
 
  # Compute pairwise ASD for each group------
   x_split <- split(x, grp)
