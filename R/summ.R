@@ -7,8 +7,12 @@
 #' @export
 #'
 #' @examples
-summ_num <- function(x, digits = 2) {
-  loc <- base::mean(x, na.rm = TRUE) |>
+summ_num <- function(x, digits = 2, wts = NULL) {
+  len <- length(x)
+  if (is.null(wts)) {
+    wts <- rep(1, times = len)
+  }
+  loc <- matrixStats::weightedMean(x, wts, na.rm = TRUE) |>
     round(digits)
   scale <- stats::sd(x, na.rm = TRUE) |>
     round(digits)

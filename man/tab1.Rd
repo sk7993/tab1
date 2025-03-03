@@ -16,6 +16,8 @@ tab1(
 \arguments{
 \item{lbl}{A named list of the form `list(old_name = new_name)` to rename the
 variables in tab1. Must be of the same length as `var` col in tab1.}
+
+\item{opts_summ}{}
 }
 \description{
 Create Table 1

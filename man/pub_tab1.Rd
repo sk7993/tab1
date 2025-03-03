@@ -4,10 +4,15 @@
 \alias{pub_tab1}
 \title{Title}
 \usage{
-pub_tab1(tab1)
+pub_tab1(
+  tab1,
+  lbl_nm = "mean (SD)",
+  lbl_nn = "median [Q1, Q3]",
+  lbl_fac = "n (\%)"
+)
 }
 \arguments{
-\item{tab1}{}
+\item{lbl_fac}{}
 }
 \description{
 Title
