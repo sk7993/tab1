@@ -4,7 +4,7 @@
 \alias{smd}
 \title{Get SMD for Variables in a Dataframe}
 \usage{
-smd(data, grp, nonnormal = NULL)
+smd(data, grp, nonnormal = NULL, ...)
 }
 \arguments{
 \item{nonnormal}{}

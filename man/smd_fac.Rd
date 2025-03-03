@@ -4,7 +4,7 @@
 \alias{smd_fac}
 \title{SMD for categorical variables}
 \usage{
-smd_fac(x, grp)
+smd_fac(x, grp, digits = 3)
 }
 \arguments{
 \item{grp}{}

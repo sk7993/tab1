@@ -4,7 +4,13 @@
 \alias{tab1}
 \title{Create Table 1}
 \usage{
-tab1(data, grp, vars = NULL, nonnormal = NULL, opts = NULL)
+tab1(
+  data,
+  grp,
+  vars = NULL,
+  nonnormal = NULL,
+  opts_summ = list(num_digits = 2, numnn_digits = 0, fac_digits = 1)
+)
 }
 \arguments{
 \item{opts}{}

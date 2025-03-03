@@ -4,7 +4,7 @@
 \alias{tab1_num}
 \title{Table 1 for numeric variables}
 \usage{
-tab1_num(data, opts = NULL)
+tab1_num(data, digits = 2, ...)
 }
 \arguments{
 \item{opts}{}

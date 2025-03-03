@@ -9,7 +9,8 @@ smd_num_nn(x, grp, ...)
 \arguments{
 \item{x}{Numeric vector of data values}
 
-\item{grp}{Variable specifying grouping for for data values}
+\item{grp}{Vector of same length as `x` specifying grouping for for
+data values}
 
 \item{...}{Additional arguments passed to `smd_num`.}
 }

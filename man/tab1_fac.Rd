@@ -2,7 +2,7 @@
 % Please edit documentation in R/tab1.R
 \name{tab1_fac}
 \alias{tab1_fac}
-\title{Categorical Table 1}
+\title{Table 1 for factor variables}
 \usage{
 tab1_fac(data, opts = NULL)
 }
@@ -10,5 +10,5 @@ tab1_fac(data, opts = NULL)
 \item{opts}{}
 }
 \description{
-Categorical Table 1
+Table 1 for factor variables
 }

@@ -2,13 +2,13 @@
 % Please edit documentation in R/smd.R
 \name{compute_smd_fac}
 \alias{compute_smd_fac}
-\title{SMD computation for factor variables (supports only two groups)}
+\title{SMD computation for factor variables}
 \usage{
-compute_smd_fac(x1, x2)
+compute_smd_fac(x1, x2, digits = 3)
 }
 \arguments{
 \item{x2}{}
 }
 \description{
-SMD computation for factor variables (supports only two groups)
+SMD computation for factor variables
 }

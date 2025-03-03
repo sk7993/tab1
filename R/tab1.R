@@ -10,8 +10,12 @@
 #' @export
 #'
 #' @examples
-tab1 <- function(data, grp, vars = NULL, nonnormal = NULL,
-                 opts = NULL) {
+tab1 <- function(data, grp,
+                 vars = NULL,
+                 nonnormal = NULL,
+                 opts_summ = list(num_digits = 2,
+                             numnn_digits = 0,
+                             fac_digits = 1)) {
 
   if (!is.character(grp) | length(grp) != 1) {
     stop("`grp` must be a character vector of length 1.")
@@ -29,10 +33,11 @@ tab1 <- function(data, grp, vars = NULL, nonnormal = NULL,
   }
 
   # Get summary stats by group
-  bl1 <- by(data_sub,
+  tbl1 <- by(data_sub,
              data[[grp]],
-             \(x) do.call("tab1_ug", c(list(x), nonnormal,
-                                                  opts))) |>
+             \(x) do.call("tab1_ug", c(list(x),
+                                       nonnormal,
+                                       opts_summ))) |>
     rbind2(id = "group") |>
     # Change from long to wide format
     reshape(
@@ -81,21 +86,20 @@ tab1 <- function(data, grp, vars = NULL, nonnormal = NULL,
 #' to be called directly.
 #'
 #' @param data data
+#' @param num_digits
+#' @param num_nn_digits
+#' @param fac_digits
 #' @param nonnormal Character vector specifiying nonnormal variables.
-#' @param opts_num  (List) Options for numeric variables passed to
-#' `sum_num`.
-#' @param opts_num_nn (List) Options for nonnormal numeric variables
-#' passed to `summ_num_nn`.
-#' @param opts_fac (List) Options for factorv variables passed to `summ_fac`.
 #'
 #' @returns
 #'
 #' @examples
 tab1_ug <- function(data,
-                 nonnormal = NULL,
-                 opts_num = NULL,
-                 opts_num_nn = NULL,
-                 opts_fac = NULL){
+                    nonnormal = NULL,
+                    num_digits = 2,
+                    numnn_digits = 0,
+                    fac_digits = 1
+                 ){
 
   if (!is.null(nonnormal) & !is.character(nonnormal)) {
     stop("Nonnormal variables must be input as a character vector")
@@ -110,14 +114,18 @@ tab1_ug <- function(data,
                  how = "replace")
 
   # Get summary tables--------------
-  t_num <- tab1_num(data[setdiff(var_names, nonnormal)],
-                      opts_num)
+  t_num <- do.call("tab1_num",
+                   c(list(data[setdiff(var_names, nonnormal)]),
+                     num_digits)
+                   )
 
-  t_num_nn <- tab1_num_nn(data[nonnormal],
-                            opts_num_nn)
+  t_num_nn <- do.call("tab1_num_nn",
+                      c(list(data[nonnormal]),
+                            numnn_digits))
 
-  t_fac <- tab1_fac(data,
-                      opts_fac)
+  t_fac <- do.call("tab1_fac",
+                   c(list(data),
+                     fac_digits))
 
   # Combine summary tables-----------------
   return(rbind(t_num,

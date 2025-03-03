@@ -4,12 +4,15 @@
 \alias{asd_threshold}
 \title{Compute ASD threshold}
 \usage{
-asd_threshold(n1, n2)
+asd_threshold(n1, n2, digits = 3)
 }
 \arguments{
 \item{n1}{Sample size for group 1}
 
 \item{n2}{Sample size for group 2}
+}
+\value{
+ASD threshold (numeric vector of length 1)
 }
 \description{
 Compute ASD threshold

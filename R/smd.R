@@ -164,7 +164,7 @@ smd_num_nn <- function(x, grp, ...){
 #' @export
 #'
 #' @examples
-smd_fac <- function(x, grp, digits = 5){
+smd_fac <- function(x, grp, digits = 3){
 
   if (!is.factor(x)) {
     x <- factor(x)

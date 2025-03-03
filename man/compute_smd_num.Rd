@@ -2,13 +2,13 @@
 % Please edit documentation in R/smd.R
 \name{compute_smd_num}
 \alias{compute_smd_num}
-\title{SMD computation for numeric vectors (supports only two groups)}
+\title{SMD computation for numeric vectors}
 \usage{
-compute_smd_num(x1, x2, abs)
+compute_smd_num(x1, x2, abs = TRUE, digits = 3)
 }
 \arguments{
 \item{abs}{}
 }
 \description{
-SMD computation for numeric vectors (supports only two groups)
+SMD computation for numeric vectors
 }
