@@ -9,11 +9,13 @@ tab1(
   grp,
   vars = NULL,
   nonnormal = NULL,
+  lbl = NULL,
   opts_summ = list(num_digits = 2, numnn_digits = 0, fac_digits = 1)
 )
 }
 \arguments{
-\item{opts}{}
+\item{lbl}{A named list of the form `list(old_name = new_name)` to rename the
+variables in tab1. Must be of the same length as `var` col in tab1.}
 }
 \description{
 Create Table 1

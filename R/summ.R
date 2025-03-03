@@ -77,20 +77,6 @@ summ_fac <- function(x,
   return(s)
 }
 
-
-summ_fac_df <- function(x, opts = NULL) {
-  s <- do.call(summ_fac, c(list(x), opts))
-
-  s <- create_summary_df(
-    var = names(s),
-    parent_var = NA,
-    type = "factor",
-    summ = unname(s)
-  )
-
-  return(s[-2])
-}
-
 create_summary_df <- function(var = NULL,
                               parent_var = NULL,
                               type = NULL,

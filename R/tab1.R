@@ -4,7 +4,9 @@
 #' @param grp
 #' @param vars
 #' @param nonnormal
-#' @param opts
+#' @param lbl A named list of the form `list(old_name = new_name)` to rename the
+#' variables in tab1. Must be of the same length as `var` col in tab1.
+#' @param opts_summ
 #'
 #' @returns
 #' @export
@@ -13,12 +15,22 @@
 tab1 <- function(data, grp,
                  vars = NULL,
                  nonnormal = NULL,
+                 lbl = NULL,
                  opts_summ = list(num_digits = 2,
                              numnn_digits = 0,
                              fac_digits = 1)) {
 
   if (!is.character(grp) | length(grp) != 1) {
     stop("`grp` must be a character vector of length 1.")
+  }
+
+  if (!is.null(lbl)) {
+    if (all(names(lbl) %in% names(data))) {
+      names(data) <- unlist(lbl[names(data)])
+      grp <- lbl[[grp]]
+    } else {
+      stop("`lbl` must be a named list with names matching variables in the dataframe.")
+    }
   }
 
   if (is.null(data[[grp]])) {
@@ -42,7 +54,7 @@ tab1 <- function(data, grp,
     # Change from long to wide format
     reshape(
       direction = "wide",
-      idvar = c("var"),
+      idvar = c("var", "parent_var"),
       timevar = "group",
       v.names = "summ",
       sep = "_"
@@ -67,7 +79,7 @@ tab1 <- function(data, grp,
   }
 
   if (!is.null(smd[[2]])){
-    res2 <- merge(tbl1[tbl1$type == "factor",],
+    res2 <- merge(tbl1[tbl1$type %in% c("factor", "factor_lvl"),],
                   smd[[2]],
                   by = "parent_var",
                   all.x = TRUE)
@@ -89,7 +101,7 @@ tab1 <- function(data, grp,
 #' @param num_digits
 #' @param num_nn_digits
 #' @param fac_digits
-#' @param nonnormal Character vector specifiying nonnormal variables.
+#' @param nonnormal Character vector specifying non-normal variables.
 #'
 #' @returns
 #'
@@ -165,7 +177,7 @@ tab1_num <- function(data, digits = 2, ...) {
          how = "unlist")
 
   res <- create_summary_df(var = names(res),
-                           parent_var = NA,
+                           parent_var = names(res),
                            type = "numeric",
                            summ = unname(res))
 
@@ -227,18 +239,26 @@ tab1_fac <- function(data, opts = NULL) {
   if(sum(sapply(data, is.factor)) == 0) {
     return(create_summary_df())
   }
-
+  factor_vars <- names(data)[sapply(data, is.factor)]
   # Summarize every factor variable in  the dataset----
   # Outputs list whose elements are dataframes
-  res <- rapply(data,
-                  \(x) do.call("summ_fac_df", c(list(x), opts)),
-                  "factor",
-                  how = "list"
-                  )
+  res <- lapply(factor_vars, \(x){
+    d <- data[[x]]
+    s <- do.call(summ_fac, c(list(d), opts))
+    s <- create_summary_df(
+      var = c(x, names(s)),
+      parent_var = x,
+      type = c("factor",
+               rep("factor_lvl",
+                   length(s))),
+      summ = c(NA, unname(s))
+    )
+    return(s)
+  })
   # Remove NULL elements from the list----
   # (i.e., non-factor variables)
-  res <- Filter(Negate(is.null), res)
-  res <- rbind2(res, "parent_var")
+
+  res <- do.call("rbind", res)
 
   return(res)
 }

@@ -1,8 +1,6 @@
 #' Title
 #'
 #' @param tab1
-#' @param lbl A named list of the form `list(old_name = new_name)` to rename the
-#' variables in tab1. Must be of the same length as `var` col in tab1.
 #'
 #' @returns
 #'
@@ -10,24 +8,35 @@
 #' @export
 #'
 #' @examples
-pub_tab1 <- function(tab1, lbl = NULL){
+pub_tab1 <- function(tab1,
+                     lbl_nm = "mean (SD)",
+                     lbl_nn = "median [Q1, Q3]",
+                     lbl_fac = "n (%)"){
   names(tab1) <- gsub("summ_", "", names(tab1))
   names(tab1) <- gsub("smd_", "ASD: ", names(tab1))
 
-  if (!is.null(lbl)) {
-    if (all(names(lbl) %in% tab1[["var"]])) {
-      tab1[["var"]] <- unlist(lbl[tab1[["var"]]])
-    } else {
-      stop("`lbl` must be a named list with names matching `tab1$var`.")
-    }
-  }
-  idx_sg <- which(!is.na(tab1$parent_var))
+  tab1$var[tab1$type == "numeric"] <- sprintf("%s, %s",
+                                              tab1$var[tab1$type == "numeric"],
+                                              lbl_nm)
+
+  tab1$var[tab1$type == "numeric_nn"] <- sprintf("%s, %s",
+                                                 tab1$var[tab1$type == "numeric_nn"],
+                                                 lbl_nn)
+
+  tab1$var[tab1$type == "factor"] <- sprintf("%s, %s",
+                                             tab1$var[tab1$type == "factor"],
+                                                 lbl_fac)
+
+  idx_sg <- which(tab1$type == "factor_lvl")
   tab1 <- tab1[,-c(2:3)]
 
-  flextable::flextable(tab1) |>
+  res <- flextable::flextable(tab1) |>
     flextable::italic(i = idx_sg, j = 1) |>
     flextable::padding(i = idx_sg, j = 1,
-                       padding.left = 10)
+                       padding.left = 10) |>
+    flextable::autofit()
+
+  return(res)
 }
 
 

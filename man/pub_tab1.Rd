@@ -4,10 +4,10 @@
 \alias{pub_tab1}
 \title{Title}
 \usage{
-pub_tab1(tab1, lbl = NULL)
+pub_tab1(tab1)
 }
 \arguments{
-\item{lbl}{}
+\item{tab1}{}
 }
 \description{
 Title

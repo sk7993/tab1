@@ -15,7 +15,7 @@ tab1_ug(
 \arguments{
 \item{data}{data}
 
-\item{nonnormal}{Character vector specifiying nonnormal variables.}
+\item{nonnormal}{Character vector specifying non-normal variables.}
 }
 \description{
 This function is the workhorse of the `tab1` function. It is not intended
