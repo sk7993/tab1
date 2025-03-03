@@ -1,12 +1,13 @@
 #' Create Table 1
 #'
-#' @param data
-#' @param grp
-#' @param vars
-#' @param nonnormal
+#' @param data A data frame.
+#' @param grp A character variable specifying the grouping variable.
+#' @param vars A character vector specifying the variables to summarize.
+#' @param nonnormal A character vector specifying which variables to treat as
+#' skewed/nonnormal.
 #' @param lbl A named list of the form `list(old_name = new_name)` to rename the
-#' variables in tab1. Must be of the same length as `var` col in tab1.
-#' @param opts_summ
+#' variables in tab1. Must be of the same length as `var` col in tab1 (optional)
+#' @param opts_summ A list specifying additional options for summarizing.
 #'
 #' @returns
 #' @export
@@ -97,10 +98,10 @@ tab1 <- function(data, grp,
 #' This function is the workhorse of the `tab1` function. It is not intended
 #' to be called directly.
 #'
-#' @param data data
-#' @param num_digits
-#' @param num_nn_digits
-#' @param fac_digits
+#' @param data A data frame.
+#' @param num_digits Number of digits for numeric variables.
+#' @param num_nn_digits Number of digits for sumamry of non-normal numeric variables.
+#' @param fac_digits Number of digits for summaries of factor variables.
 #' @param nonnormal Character vector specifying non-normal variables.
 #'
 #' @returns

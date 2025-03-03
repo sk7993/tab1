@@ -1,20 +1,28 @@
 #' Summarize numeric variables
 #'
-#' @param x
-#' @param digits
+#' @param x A numeric vector.
+#' @param wts A numeric vector of weights (optional).
+#' @param digits Number of digits to round to (default is 2).
 #'
-#' @returns
+#' @returns Returns (weighted) arithmetic mean of values in x.
 #' @export
 #'
 #' @examples
-summ_num <- function(x, digits = 2, wts = NULL) {
+summ_num <- function(x, wts = NULL, digits = 2) {
+
+  if (!(is.numeric(digits) & length(digits) == 1)) {
+    error("`digits` must be a numeric vector of length 1.")
+  }
+
   len <- length(x)
   if (is.null(wts)) {
     wts <- rep(1, times = len)
   }
-  loc <- matrixStats::weightedMean(x, wts, na.rm = TRUE) |>
+
+  loc <- wtd.mean(x, wts, na.rm = TRUE) |>
     round(digits)
-  scale <- stats::sd(x, na.rm = TRUE) |>
+  scale <- wtd.var(x, wts, na.rm = TRUE) |>
+    sqrt() |>
     round(digits)
 
   sprintf("%s (%s)",
@@ -33,13 +41,22 @@ summ_num <- function(x, digits = 2, wts = NULL) {
 #'
 #' @examples
 summ_num_nn <- function(x,
+                        wts = NULL,
                         digits = 0,
                         delim = ","){
 
-  loc <- stats::median(x,
+  len <- length(x)
+  if (is.null(wts)) {
+    wts <- rep(1, times = len)
+  }
+
+  loc <- wtd.quantile(x,
+                      wts,
+                      0.5,
                      na.rm = TRUE) |>
     round(digits)
-  scale <- stats::quantile(x,
+  scale <- wtd.quantile(x,
+                        wts,
                        c(0.25, 0.75),
                        na.rm = TRUE) |>
     round(digits)
