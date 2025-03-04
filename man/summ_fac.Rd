@@ -4,7 +4,7 @@
 \alias{summ_fac}
 \title{Summarize categorical variables}
 \usage{
-summ_fac(x, digits = 0)
+summ_fac(x, wts = NULL, digits = 0)
 }
 \arguments{
 \item{digits}{}

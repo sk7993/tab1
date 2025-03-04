@@ -4,7 +4,7 @@
 \alias{smd_num}
 \title{SMD for numeric variables}
 \usage{
-smd_num(x, grp)
+smd_num(x, grp, wts = NULL)
 }
 \arguments{
 \item{x}{A numeric vector}

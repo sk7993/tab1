@@ -90,7 +90,7 @@ summ_fac <- function(x,
     wts <- rep(1, times = len)
   }
 
-  tab <- wtd.table(x, wts, type = "table") |>
+  tab <- wtd_tbl(x, wts) |>
     round(digits)
   prop <- tab |>
     prop.table()

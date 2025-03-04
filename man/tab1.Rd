@@ -7,6 +7,7 @@
 tab1(
   data,
   grp,
+  wts = NULL,
   vars = NULL,
   nonnormal = NULL,
   lbl = NULL,

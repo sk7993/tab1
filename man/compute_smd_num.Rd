@@ -4,7 +4,7 @@
 \alias{compute_smd_num}
 \title{SMD computation for numeric vectors}
 \usage{
-compute_smd_num(x1, x2, abs = TRUE, digits = 3)
+compute_smd_num(x1, x2, wts1 = NULL, wts2 = NULL, abs = TRUE, digits = 3)
 }
 \arguments{
 \item{abs}{}

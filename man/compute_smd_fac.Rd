@@ -4,7 +4,7 @@
 \alias{compute_smd_fac}
 \title{SMD computation for factor variables}
 \usage{
-compute_smd_fac(x1, x2, digits = 3)
+compute_smd_fac(x1, x2, wts1 = NULL, wts2 = NULL, digits = 3)
 }
 \arguments{
 \item{x2}{}

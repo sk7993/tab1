@@ -1,4 +1,4 @@
-#' Get SMD for Variables in a Dataframe
+#' Get SMD for Variables in a Data Frame
 #'
 #' @param data
 #' @param grp
@@ -70,6 +70,7 @@ smd <- function(data, grp, wts = NULL,
     res2 <- Filter(Negate(is.null), res_fac) |>
       lapply(f1) |>
       rbind2("parent_var")
+    res2[["var"]] <- res2$parent_var
   }
 
   # Return list
@@ -143,6 +144,7 @@ smd_num <- function(x, grp, wts = NULL){
 compute_smd_num <- function(x1, x2,
                             wts1 = NULL,
                             wts2 = NULL,
+                            denom = "unweighted",
                             abs = TRUE, digits = 3) {
   if ((is.null(wts1) & !is.null(wts2)) |
       (!is.null(wts1) & is.null(wts2))) {
@@ -159,7 +161,13 @@ compute_smd_num <- function(x1, x2,
   if (abs == TRUE) {
     diff <- abs(diff)
   }
-  pooled_sd <- sqrt((var(x1, na.rm = TRUE) + var(x2, na.rm = TRUE)) / 2)
+  if (denom == "unweighted") {
+    pooled_sd <- sqrt(0.5*(var(x1, na.rm = TRUE) + var(x2, na.rm = TRUE)))
+  } else if (denom == "weighted") {
+    pooled_sd <- sqrt(0.5*(wtd.var(x1, wts1, na.rm = TRUE) +
+                             wtd.var(x2, wts2, na.rm = TRUE)))
+  }
+
   res <- round(diff / pooled_sd, digits)
   return(res)
 }
@@ -263,8 +271,8 @@ compute_smd_fac <- function(x1, x2,
   }
 
   # Diff in proportions
-  x1_p <- prop.table(wtd.tbl(x1, wts1))[-1]
-  x2_p <- prop.table(wtd.tbl(x2, wts2))[-1]
+  x1_p <- prop.table(wtd_tbl(x1, wts1))[-1]
+  x2_p <- prop.table(wtd_tbl(x2, wts2))[-1]
   d <- x2_p - x1_p
 
   # Covariance matrix

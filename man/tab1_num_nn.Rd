@@ -4,7 +4,7 @@
 \alias{tab1_num_nn}
 \title{Table 1 for skewed/non-normal numeric variables}
 \usage{
-tab1_num_nn(data, opts = NULL)
+tab1_num_nn(data, wts = NULL, digits = 2, ...)
 }
 \arguments{
 \item{opts}{}

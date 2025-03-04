@@ -6,6 +6,7 @@
 \usage{
 tab1_ug(
   data,
+  wts = NULL,
   nonnormal = NULL,
   num_digits = 2,
   numnn_digits = 0,

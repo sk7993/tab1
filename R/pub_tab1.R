@@ -1,11 +1,11 @@
-#' Title
+#' Create publication quality table 1 from tab1 object
 #'
-#' @param tab1
-#' @param lbl_nm
-#' @param lbl_nn
-#' @param lbl_fac
+#' @param tab1 Data frame output from `tab1` function.
+#' @param lbl_nm Summary statistic label for numeric variables.
+#' @param lbl_nn Summary statistic label for non-numeric variables.
+#' @param lbl_fac Summary statistic label for factor variables
 #'
-#' @returns
+#' @returns A flextable object
 #'
 #' @import flextable
 #' @export
@@ -42,7 +42,7 @@ pub_tab1 <- function(tab1,
     # Italicize and indent subcategories
     flextable::italic(i = idx_sg, j = 1) |>
     flextable::padding(i = idx_sg, j = 1,
-                       padding.left = 10) |>
+                       padding.left = 15) |>
     flextable::autofit()
 
   return(res)

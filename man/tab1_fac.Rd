@@ -4,7 +4,7 @@
 \alias{tab1_fac}
 \title{Table 1 for factor variables}
 \usage{
-tab1_fac(data, opts = NULL)
+tab1_fac(data, wts = NULL, digits = 0, ...)
 }
 \arguments{
 \item{opts}{}

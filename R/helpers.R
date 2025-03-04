@@ -29,3 +29,15 @@ rbind2 <- function(df_list, id_col = "id"){
   res <- res[,sel_var]
   return(res)
 }
+
+merge2 <- function(x, y, ...){
+  # Simple wrapper around merge that preserves order
+  # based on the left data frame.
+  nm <- "._sort&"
+  x[[nm]] <- seq_len(nrow(x))
+  res <- merge(x, y, ...)
+  res <- res[order(res[[nm]]),]
+  res[[nm]] <- NULL
+
+  return(res)
+ }

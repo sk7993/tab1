@@ -14,12 +14,14 @@
 #'
 #' @examples
 tab1 <- function(data, grp,
+                 wts = NULL,
                  vars = NULL,
                  nonnormal = NULL,
                  lbl = NULL,
                  opts_summ = list(num_digits = 2,
                              numnn_digits = 0,
-                             fac_digits = 1)) {
+                             fac_digits = 1),
+                 opts_smd = list()) {
 
   if (!is.character(grp) | length(grp) != 1) {
     stop("`grp` must be a character vector of length 1.")
@@ -38,6 +40,10 @@ tab1 <- function(data, grp,
     stop("`grp` variable not found in `data`.")
   }
 
+  if (is.null(wts)) {
+    wts <- rep(1, nrow(data))
+  }
+
   # Subset data based on specified vars--------------
   data_sub <- data[names(data) != grp]
 
@@ -46,11 +52,16 @@ tab1 <- function(data, grp,
   }
 
   # Get summary stats by group
-  tbl1 <- by(data_sub,
+  opts_summ <- c(list(nonnormal = nonnormal),
+                 opts_summ)
+
+  tab <- by(cbind(data_sub, "__w" = wts),
              data[[grp]],
-             \(x) do.call("tab1_ug", c(list(x),
-                                       nonnormal,
-                                       opts_summ))) |>
+             \(x, opts) do.call("tab1_ug",
+                                c(list(x[,-ncol(x)]),
+                                  list("wts" = x[[ncol(x)]]),
+                                  opts)),
+             opts = opts_summ)|>
     rbind2(id = "group") |>
     # Change from long to wide format
     reshape(
@@ -61,17 +72,29 @@ tab1 <- function(data, grp,
       sep = "_"
     )
 
-  # Get SMD by group
-  data_sub[[grp]] <- data[[grp]]
+  # Missing-------
+  miss <- sapply(data, \(x) sum(is.na(x)))
+  miss <- data.frame(var = names(miss),
+                     missing = unname(miss))
 
-  smd <- smd(data_sub,
-             grp,
-             nonnormal)
+  tab <- merge2(tab, miss,
+                by = "var",
+                all.x = TRUE)
+
+  # Get SMD by group---------
+  data_sub[[grp]] <- data[[grp]]
+  opts_smd <- c(list(grp = grp,
+                   wts = wts,
+                   nonnormal = nonnormal),
+                opts_smd)
+  smd <- do.call("smd",
+                 c(list(data_sub),
+                   opts_smd))
 
   # Combine summary and SMD by group
   if (!is.null(smd[[1]])) {
 
-    res1 <- merge(tbl1[tbl1$type %in% c("numeric", "numeric_nn"),],
+    res1 <- merge2(tab[tab$type %in% c("numeric", "numeric_nn"),],
                  smd[[1]],
                  by = "var",
                  all.x = TRUE)
@@ -80,9 +103,9 @@ tab1 <- function(data, grp,
   }
 
   if (!is.null(smd[[2]])){
-    res2 <- merge(tbl1[tbl1$type %in% c("factor", "factor_lvl"),],
+    res2 <- merge2(tab[tab$type %in% c("factor", "factor_lvl"),],
                   smd[[2]],
-                  by = "parent_var",
+                  by = c("var", "parent_var"),
                   all.x = TRUE)
   } else {
     res2 <- NULL
@@ -144,19 +167,11 @@ tab1_ug <- function(data,
                      list(wts = wts),
                      digits = fac_digits))
 
-  miss <- sapply(data, \(x) sum(is.na(x)))
-  miss <- data.frame(var = names(miss),
-                     missing = unname(miss))
-
+  # Combine summary tables-----------------
   res <- rbind(t_num,
                t_num_nn,
                t_fac)
 
-  res <- merge(res, miss, by = "var",
-               all.x = TRUE,
-               sort = FALSE)
-
-  # Combine summary tables-----------------
   return(res)
 }
 
