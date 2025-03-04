@@ -9,7 +9,7 @@
 #' variables in tab1. Must be of the same length as `var` col in tab1 (optional)
 #' @param opts_summ A list specifying additional options for summarizing.
 #'
-#' @returns
+#' @returns A data frame.
 #' @export
 #'
 #' @examples

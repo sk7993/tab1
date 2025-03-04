@@ -77,7 +77,7 @@ summ_num_nn <- function(x,
 #' @param x
 #' @param digits
 #'
-#' @returns
+#' @returns (Weighted) proportions for values in `x`.
 #' @export
 #'
 #' @examples

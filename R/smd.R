@@ -259,6 +259,7 @@ smd_fac <- function(x, grp, wts = NULL,
 compute_smd_fac <- function(x1, x2,
                             wts1 = NULL,
                             wts2 = NULL,
+                            denom = "unweighted",
                             digits = 3){
 
   if ((is.null(wts1) & !is.null(wts2)) |
@@ -276,8 +277,11 @@ compute_smd_fac <- function(x1, x2,
   d <- x2_p - x1_p
 
   # Covariance matrix
-  x1_p <- prop.table(table(x1))[-1]
-  x2_p <- prop.table(table(x2))[-1]
+  if (denom == "unweighted") {
+    x1_p <- prop.table(table(x1))[-1]
+    x2_p <- prop.table(table(x2))[-1]
+  }
+
   dgl <- (x1_p*(1 - x1_p) + x2_p*(1 - x2_p))/2
   covar <- (-1*outer(x1_p, x1_p) + -1*outer(x2_p, x2_p))/2
   diag(covar) <- dgl

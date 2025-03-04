@@ -1,14 +1,13 @@
 # TODO
 
 - tab1 
-  - Add support for weighted data WIP
-    - Effective sample size
+  - Effective sample size
   - Support for normalizing weights (for counts in wtd data)
   - Add support for multiple grouping variables
 
 - SMD
   - Add support for summarizing ASDs (min, max etc.)
-  - Support option for using weighted/unweighted denom. for SMD
+  - Support option for using weighted/unweighted denom. for SMD WIP
 
 - pub_tab1
   - Conditional precision/rounding based on value

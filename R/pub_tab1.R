@@ -5,7 +5,7 @@
 #' @param lbl_nn Summary statistic label for non-numeric variables.
 #' @param lbl_fac Summary statistic label for factor variables
 #'
-#' @returns A flextable object
+#' @returns A flextable object.
 #'
 #' @import flextable
 #' @export
