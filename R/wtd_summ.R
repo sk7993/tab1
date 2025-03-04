@@ -81,63 +81,6 @@ wtd.var <- function (x, weights = NULL, normwt = FALSE, na.rm = TRUE, method = c
   sum(weights * ((x - xbar)^2))/(sw - 1)
 }
 
-wtd.table <- function (x, weights = NULL, type = c("list", "table"), normwt = FALSE,
-                       na.rm = TRUE)
-{
-  type <- match.arg(type)
-  if (!length(weights))
-    weights <- rep(1, length(x))
-  isdate <- FALSE
-  ax <- attributes(x)
-  ax$names <- NULL
-  if (is.character(x))
-    x <- as.factor(x)
-  lev <- levels(x)
-  x <- unclass(x)
-  if (na.rm) {
-    s <- !is.na(x + weights)
-    x <- x[s, drop = FALSE]
-    weights <- weights[s]
-  }
-  n <- length(x)
-  if (normwt)
-    weights <- weights * length(x)/sum(weights)
-  i <- order(x)
-  x <- x[i]
-  weights <- weights[i]
-  if (anyDuplicated(x)) {
-    weights <- tapply(weights, x, sum)
-    if (length(lev)) {
-      levused <- lev[sort(unique(x))]
-      if ((length(weights) > length(levused)) && any(is.na(weights)))
-        weights <- weights[!is.na(weights)]
-      if (length(weights) != length(levused))
-        stop("program logic error")
-      names(weights) <- levused
-    }
-    if (!length(names(weights)))
-      stop("program logic error")
-    if (type == "table")
-      return(weights)
-    x <- all.is.numeric(names(weights), "vector")
-    if (isdate)
-      attributes(x) <- c(attributes(x), ax)
-    names(weights) <- NULL
-    return(list(x = x, sum.of.weights = weights))
-  }
-  xx <- x
-  if (isdate)
-    attributes(xx) <- c(attributes(xx), ax)
-  if (type == "list")
-    list(x = if (length(lev)) lev[x] else xx, sum.of.weights = weights)
-  else {
-    names(weights) <- if (length(lev))
-      lev[x]
-    else xx
-    weights
-  }
-}
-
 wtd.ecdf <- function (x, weights = NULL, type = c("i/n", "(i-1)/(n-1)", "i/(n+1)"),
                       normwt = FALSE, na.rm = TRUE)
 {
