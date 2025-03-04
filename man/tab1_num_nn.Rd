@@ -7,7 +7,16 @@
 tab1_num_nn(data, wts = NULL, digits = 2, ...)
 }
 \arguments{
-\item{opts}{}
+\item{data}{A data frame.}
+
+\item{wts}{A non-negative numeric vector of weights.}
+
+\item{digits}{Number of digits to use for summary stats.}
+
+\item{...}{Other arguments based to summ_num_nn.}
+}
+\value{
+A data frame with summary statistics.
 }
 \description{
 Table 1 for skewed/non-normal numeric variables

@@ -1,4 +1,4 @@
-wtd_tbl <- function(x, weights = NULL){
+wtd_tbl <- function(x, weights = NULL, ...){
   if (is.null(weights)) {
     return(table(x, ...))
   }
@@ -29,6 +29,7 @@ wtd_tbl <- function(x, weights = NULL){
 "%nin%" <- function (x, table) {
   match(x, table, nomatch = 0) == 0
 }
+
 all.is.numeric <- function (x, what = c("test", "vector", "nonnum"), extras = c(".",
                                                               "NA"))
 {
@@ -81,7 +82,7 @@ wtd.var <- function (x, weights = NULL, normwt = FALSE, na.rm = TRUE, method = c
   sum(weights * ((x - xbar)^2))/(sw - 1)
 }
 
-wtd.ecdf <- function (x, weights = NULL, type = c("i/n", "(i-1)/(n-1)", "i/(n+1)"),
+wtd.Ecdf <- function (x, weights = NULL, type = c("i/n", "(i-1)/(n-1)", "i/(n+1)"),
                       normwt = FALSE, na.rm = TRUE)
 {
   type <- match.arg(type)
@@ -98,7 +99,7 @@ wtd.ecdf <- function (x, weights = NULL, type = c("i/n", "(i-1)/(n-1)", "i/(n+1)
     options(digits = 7)
     on.exit(options(oldopt))
     cumu <- table(x)
-    isdate <- testDateTime(x)
+    isdate <- FALSE
     ax <- attributes(x)
     ax$names <- NULL
     x <- as.numeric(names(cumu))

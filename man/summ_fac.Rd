@@ -7,7 +7,14 @@
 summ_fac(x, wts = NULL, digits = 0)
 }
 \arguments{
-\item{digits}{}
+\item{x}{A factor vector.}
+
+\item{wts}{A non-negative vector of weights.}
+
+\item{digits}{Number of decimal places to use}
+}
+\value{
+(Weighted) proportions for values in `x`.
 }
 \description{
 Summarize categorical variables

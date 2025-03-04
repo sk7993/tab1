@@ -2,7 +2,7 @@
 % Please edit documentation in R/pub_tab1.R
 \name{pub_tab1}
 \alias{pub_tab1}
-\title{Title}
+\title{Create publication quality table 1 from tab1 object}
 \usage{
 pub_tab1(
   tab1,
@@ -12,8 +12,21 @@ pub_tab1(
 )
 }
 \arguments{
-\item{lbl_fac}{}
+\item{tab1}{Data frame output from `tab1` function.}
+
+\item{lbl_nm}{Summary statistic label for numeric variables.}
+
+\item{lbl_nn}{Summary statistic label for non-numeric variables.}
+
+\item{lbl_fac}{Summary statistic label for factor variables}
+}
+\value{
+A flextable object.
 }
 \description{
-Title
+Create publication quality table 1 from tab1 object
+}
+\examples{
+tab1(iris, "Species") |>
+pub_tab1()
 }

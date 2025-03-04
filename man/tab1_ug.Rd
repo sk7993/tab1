@@ -16,13 +16,18 @@ tab1_ug(
 \arguments{
 \item{data}{A data frame.}
 
+\item{wts}{A non-negative numeric vector of weights.}
+
 \item{nonnormal}{Character vector specifying non-normal variables.}
 
 \item{num_digits}{Number of digits for numeric variables.}
 
-\item{fac_digits}{Number of digits for summaries of factor variables.}
+\item{numnn_digits}{Number of digits for sumamry of non-normal numeric variables.}
 
-\item{num_nn_digits}{Number of digits for sumamry of non-normal numeric variables.}
+\item{fac_digits}{Number of digits for summaries of factor variables.}
+}
+\value{
+A data frame.
 }
 \description{
 This function is the workhorse of the `tab1` function. It is not intended

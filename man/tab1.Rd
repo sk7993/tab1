@@ -11,7 +11,8 @@ tab1(
   vars = NULL,
   nonnormal = NULL,
   lbl = NULL,
-  opts_summ = list(num_digits = 2, numnn_digits = 0, fac_digits = 1)
+  opts_summ = list(num_digits = 2, numnn_digits = 0, fac_digits = 1),
+  opts_smd = list(denom = "unweighted", abs = TRUE)
 )
 }
 \arguments{
@@ -19,16 +20,56 @@ tab1(
 
 \item{grp}{A character variable specifying the grouping variable.}
 
+\item{wts}{A (non-negative) numeric vector of weights (optional). See details.}
+
 \item{vars}{A character vector specifying the variables to summarize.}
 
-\item{nonnormal}{A character vector specifying which variables to treat as
+\item{nonnormal}{A character vector specifying variables to be treated as
 skewed/nonnormal.}
 
 \item{lbl}{A named list of the form `list(old_name = new_name)` to rename the
 variables in tab1. Must be of the same length as `var` col in tab1 (optional)}
 
-\item{opts_summ}{A list specifying additional options for summarizing.}
+\item{opts_summ}{A list specifying additional options for summarizing variables.
+Currently supports the following options:
+ -}
+
+\item{opts_smd}{A list specifying options for SMD calculations. Supports the
+following options:
+ - denom: A character vector specifying how to handle denominators when
+ calculating SMD. See details.
+ - abs: Logical specifying whether to return absolute SMD. Default is TRUE.}
+}
+\value{
+A data frame with summary statistics and pairwise SMDs.
 }
 \description{
-Create Table 1
+Creates a table with (weighted) summary statistics and pairwise SMDs from a given
+data frame.
+}
+\details{
+The summary statistics returned are mean (SD), median [Q1, Q3]
+and n (%) for numeric, non-normal numeric and factor variables respectively.
+If using weights, the function will only report proportions for the variables
+since counts are not meaningful due to weights not being normalized.
+For weighted data, the standardized mean difference (SMD) can be calculated using
+the weighted or unweighted pooled variance in the denominator. However,
+using the weighted pooled variance may result in a paradoxical situation where
+the mean difference decreases but the SMD increases. It is thus recommended
+that the unweighted pooled variance be used to ensure that the same
+standardization factor is used both before and after weighting.
+}
+\examples{
+# Run with defaults
+tab1(iris, grp = "Species")
+# Available options
+tab1(iris, grp = "Species", nonnormal = "Sepal.Width",
+opts_summ = list(num_digits = 3, numnn_digits = 2),
+opts_smd = list(abs = FALSE))
+# Weighted data
+set.seed(123)
+w <- rnorm(length(iris))
+# IMPORTANT: Note the difference in how denominator is calculated
+tab1(iris, "Species")
+tab1(iris, "Species", opts_smd = list(denom = "weighted"))
 }

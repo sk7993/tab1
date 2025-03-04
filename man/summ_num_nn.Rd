@@ -7,7 +7,16 @@
 summ_num_nn(x, wts = NULL, digits = 0, delim = ",")
 }
 \arguments{
-\item{delim}{}
+\item{x}{A numeric vector.}
+
+\item{wts}{A numeric vector of weights (optional).}
+
+\item{digits}{Number of digits to round to (default is 2).}
+
+\item{delim}{Delimiter to use for separating values.}
+}
+\value{
+A string with median [Q1, Q3]
 }
 \description{
 Summarize non-normal numeric variables

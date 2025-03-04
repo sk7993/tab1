@@ -1,8 +1,23 @@
 #' Create Table 1
+#' @description
+#' Creates a table with (weighted) summary statistics and pairwise SMDs from a given
+#' data frame.
 #'
+#' @details
+#' The summary statistics returned are mean (SD), median [Q1, Q3]
+#' and n (%) for numeric, non-normal numeric and factor variables respectively.
+#' If using weights, the function will only report proportions for the variables
+#' since counts are not meaningful due to weights not being normalized.
+#' For weighted data, the standardized mean difference (SMD) can be calculated using
+#' the weighted or unweighted pooled variance in the denominator. However,
+#' using the weighted pooled variance may result in a paradoxical situation where
+#' the mean difference decreases but the SMD increases. It is thus recommended
+#' that the unweighted pooled variance be used to ensure that the same
+#' standardization factor is used both before and after weighting.
 #'
 #' @param data A data frame.
 #' @param grp A character variable specifying the grouping variable.
+#' @param wts A (non-negative) numeric vector of weights (optional). See details.
 #' @param vars A character vector specifying the variables to summarize.
 #' @param nonnormal A character vector specifying variables to be treated as
 #' skewed/nonnormal.
@@ -26,8 +41,7 @@
 #' tab1(iris, grp = "Species")
 #' # Available options
 #' tab1(iris, grp = "Species", nonnormal = "Sepal.Width",
-#' opts_summ = list(num_digits = 3,
-#' numnn_digits = 2),
+#' opts_summ = list(num_digits = 3, numnn_digits = 2),
 #' opts_smd = list(abs = FALSE))
 #' # Weighted data
 #' set.seed(123)
@@ -37,7 +51,6 @@
 #' tab1(iris, "Species", opts_smd = list(denom = "weighted"))
 tab1 <- function(data, grp,
                  wts = NULL,
-                 normwts = FALSE,
                  vars = NULL,
                  nonnormal = NULL,
                  lbl = NULL,
@@ -68,9 +81,9 @@ tab1 <- function(data, grp,
     wts <- rep(1, nrow(data))
   }
 
-  # if (normwts) {
-  #   wts <- nrow(data)
-  # }
+  if (nrow(data) != length(wts)) {
+    stop("Data frame and weights must have the same length.")
+  }
 
   # Subset data based on specified vars--------------
   data_sub <- data[names(data) != grp]
@@ -90,7 +103,7 @@ tab1 <- function(data, grp,
                                   list("wts" = x[[ncol(x)]]),
                                   opts)),
              opts = opts_summ)|>
-    rbind2(id = "group") |>
+    rbind2(id_col = "group") |>
     # Change from long to wide format
     reshape(
       direction = "wide",
@@ -148,6 +161,19 @@ tab1 <- function(data, grp,
   miss <- res[["missing"]]
   res <- res[,-match("missing", names(res))]
   res[["missing"]] <- miss
+
+  # Add sample sizes
+  if (all(wts == 1)) {
+    n <- tapply(data_sub, data[[grp]], nrow)
+  } else {
+    n <- tapply(wts, data[[grp]], ess)
+  }
+
+  res[nrow(res) + 1,] <- c("n", "n", NA,
+                           n,
+                           rep(NA,
+                               ncol(res) - length(n) - 3))
+
   return(res)
 }
 
@@ -157,14 +183,14 @@ tab1 <- function(data, grp,
 #' to be called directly.
 #'
 #' @param data A data frame.
+#' @param wts A non-negative numeric vector of weights.
 #' @param num_digits Number of digits for numeric variables.
-#' @param num_nn_digits Number of digits for sumamry of non-normal numeric variables.
+#' @param numnn_digits Number of digits for sumamry of non-normal numeric variables.
 #' @param fac_digits Number of digits for summaries of factor variables.
 #' @param nonnormal Character vector specifying non-normal variables.
 #'
-#' @returns
-#'
-#' @examples
+#' @returns A data frame.
+
 tab1_ug <- function(data,
                     wts = NULL,
                     nonnormal = NULL,
@@ -197,10 +223,10 @@ tab1_ug <- function(data,
                         list("wts" = wts),
                         list(digits = numnn_digits)))
 
-  t_fac <- do.call("tab1_fac",
-                   c(list(data),
-                     list(wts = wts),
-                     digits = fac_digits))
+    t_fac <- do.call("tab1_fac",
+                     c(list(data),
+                       list(wts = wts),
+                       digits = fac_digits))
 
   # Combine summary tables-----------------
   res <- rbind(t_num,
@@ -212,12 +238,13 @@ tab1_ug <- function(data,
 
 #' Table 1 for numeric variables
 #'
-#' @param data
-#' @param opts
+#' @param data A data frame
+#' @param wts A non-negative numeric vector of weights.
+#' @param digits Number of digits to use for summary stats.
+#' @param ... Other arguments passed to summ_num.
 #'
-#' @returns
-#'
-#' @examples
+#' @returns A data frame.
+
 tab1_num <- function(data, wts = NULL, digits = 2, ...) {
 
   args <- as.list(match.call())[-(1:2)]
@@ -251,12 +278,12 @@ tab1_num <- function(data, wts = NULL, digits = 2, ...) {
 
 #' Table 1 for skewed/non-normal numeric variables
 #'
-#' @param data
-#' @param opts
+#' @param data A data frame.
+#' @param wts A non-negative numeric vector of weights.
+#' @param digits Number of digits to use for summary stats.
+#' @param ... Other arguments based to summ_num_nn.
 #'
-#' @returns
-#'
-#' @examples
+#' @returns A data frame with summary statistics.
 tab1_num_nn <- function(data, wts = NULL, digits = 2, ...) {
 
   args <- as.list(match.call())[-(1:2)]
@@ -287,14 +314,7 @@ tab1_num_nn <- function(data, wts = NULL, digits = 2, ...) {
 }
 
 
-#' Table 1 for factor variables
-#'
-#' @param data
-#' @param opts
-#'
-#' @returns
-#'
-#' @examples
+# Table 1 for factor variables-----
 tab1_fac <- function(data, wts = NULL, digits = 0, ...) {
 
   args <- as.list(match.call())[-(1:2)]
@@ -311,7 +331,7 @@ tab1_fac <- function(data, wts = NULL, digits = 0, ...) {
   factor_vars <- names(data)[sapply(data, is.factor)]
   # Summarize every factor variable in  the dataset----
   # Outputs list whose elements are dataframes
-  res <- lapply(factor_vars, \(x){
+  res <- lapply(factor_vars, \(x, args){
     d <- data[[x]]
     s <- do.call(summ_fac, c(list(d), args))
     s <- create_summary_df(
@@ -322,12 +342,17 @@ tab1_fac <- function(data, wts = NULL, digits = 0, ...) {
                    length(s))),
       summ = c(NA, unname(s))
     )
-    return(s)
-  })
-  # Remove NULL elements from the list----
-  # (i.e., non-factor variables)
+    return(s)},
+    args = args)
 
   res <- do.call("rbind", res)
 
   return(res)
+}
+
+# Function calculates the effective sample size give a vector of weights
+ess <- function(w){
+  num <- sum(w, na.rm = TRUE)^2
+  denom <- sum(w^2, na.rm = TRUE)
+  return(num/denom)
 }

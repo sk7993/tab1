@@ -11,6 +11,8 @@
 #' @export
 #'
 #' @examples
+#' tab1(iris, "Species") |>
+#' pub_tab1()
 pub_tab1 <- function(tab1,
                      lbl_nm = "mean (SD)",
                      lbl_nn = "median [Q1, Q3]",

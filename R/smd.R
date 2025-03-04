@@ -1,13 +1,23 @@
 #' Get SMD for Variables in a Data Frame
+#' Returns pairwise standardized mean differences (SMDs) for all variables
+#' in the data frame.
 #'
-#' @param data
-#' @param grp
-#' @param nonnormal
+#' @param data A data frame
+#' @param grp A character vector of length 1 specifying grouping variable
+#' @param nonnormal A character vector specifying variables to be treated as
+#' non-normal
+#' @param wts A non-negative numeric vector of weights.
+#' @param abs Logical specifying whether to return absolute SMD
+#' @param denom Character vector specifying how to calculate denominator
+#' @param digits Integer specifying number of decimal places to be used.
 #'
-#' @returns
+#' @returns A list with two elements. First element holds SMDs for numeric variables,
+#' and second element holds SMDs for factor variables.
 #' @export
 #'
 #' @examples
+#' smd(iris, "Species")
+#' smd(warpbreaks, "tension")
 smd <- function(data, grp,
                 wts = NULL,
                 nonnormal = NULL,
@@ -107,11 +117,11 @@ smd <- function(data, grp,
 #' @param grp A factor of same length as `x` specifying groups.
 #' If not a factor, then the vector will be coerced.
 #' @param abs Logical specifying whether to return absolute SMD (default is TRUE).
+#' @param wts A non-negative numeric vector of weights.
+#' @param denom Specifies how the denominator is calculated.
+#' @param digits Integer indicating number of decimal places.
 #'
 #' @returns A named numeric vector of length `choose(unique(grp), 2)`.
-#' @export
-#'
-#' @examples
 smd_num <- function(x, grp,
                     wts = NULL, denom = "unweighted",
                     abs = TRUE, digits = 3){
@@ -137,7 +147,7 @@ smd_num <- function(x, grp,
   x_split <- split(data.frame("x" = x,
                               "wts" = wts),
                    grp)
-  smd <- combn(levels(grp), 2, FUN = \(p, opts) {
+  smd <- utils::combn(levels(grp), 2, FUN = \(p, opts) {
     g1 <- p[1]
     g2 <- p[2]
     x1 <- x_split[[g1]][["x"]]
@@ -158,15 +168,7 @@ smd_num <- function(x, grp,
   return(smd)
 }
 
-#' SMD computation for numeric vectors
-#'
-#' @param x1
-#' @param x2
-#' @param abs
-#'
-#' @returns
-#'
-#' @examples
+# Function that computes SMD
 compute_smd_num <- function(x1, x2,
                             wts1 = NULL,
                             wts2 = NULL,
@@ -202,14 +204,11 @@ compute_smd_num <- function(x1, x2,
 #' SMD for skewed/non-normal numeric variables
 #'
 #' @param x Numeric vector of data values
-#' @param grp Vector of same length as `x` specifying grouping for for
-#' data values
+#' @param grp A factor of same length as `x` specifying groups.
+#' If not a factor, then the vector will be coerced.
 #' @param ... Additional arguments passed to `smd_num`.
 #'
-#' @returns
-#' @export
-#'
-#' @examples
+#' @returns A named numeric vector
 smd_num_nn <- function(x, grp, ...){
 
   return(smd_num(rank(x), grp, ...))
@@ -219,13 +218,15 @@ smd_num_nn <- function(x, grp, ...){
 
 #' SMD for categorical variables
 #'
-#' @param x
-#' @param grp
+#' @param x A factor vector
+#' @param grp A factor of same length as `x` specifying groups.
+#' If not a factor, then the vector will be coerced.
+#' @param wts A non-negative numeric vector specifying weights
+#' @param denom Specifies how the denominator is calculated.
+#' @param digits Integer indicating number of decimal places.
 #'
-#' @returns
-#' @export
-#'
-#' @examples
+#' @returns A named numeric vector
+
 smd_fac <- function(x, grp,
                     wts = NULL,
                     denom = "unweighted",
@@ -257,7 +258,7 @@ smd_fac <- function(x, grp,
                               "wts" = wts),
                    grp)
 
-  smd <- combn(levels(grp), 2,
+  smd <- utils::combn(levels(grp), 2,
                FUN = \(p, opts) {
     g1 <- p[1]
     g2 <- p[2]
@@ -279,14 +280,7 @@ smd_fac <- function(x, grp,
   return(smd)
 }
 
-#' SMD computation for factor variables
-#'
-#' @param x1
-#' @param x2
-#'
-#' @returns
-#'
-#' @examples
+# Compute SMD for factors
 compute_smd_fac <- function(x1, x2,
                             wts1 = NULL,
                             wts2 = NULL,

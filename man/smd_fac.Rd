@@ -4,10 +4,22 @@
 \alias{smd_fac}
 \title{SMD for categorical variables}
 \usage{
-smd_fac(x, grp, wts = NULL, digits = 3)
+smd_fac(x, grp, wts = NULL, denom = "unweighted", digits = 3)
 }
 \arguments{
-\item{grp}{}
+\item{x}{A factor vector}
+
+\item{grp}{A factor of same length as `x` specifying groups.
+If not a factor, then the vector will be coerced.}
+
+\item{wts}{A non-negative numeric vector specifying weights}
+
+\item{denom}{Specifies how the denominator is calculated.}
+
+\item{digits}{Integer indicating number of decimal places.}
+}
+\value{
+A named numeric vector
 }
 \description{
 SMD for categorical variables

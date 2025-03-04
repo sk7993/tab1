@@ -7,7 +7,16 @@
 tab1_num(data, wts = NULL, digits = 2, ...)
 }
 \arguments{
-\item{opts}{}
+\item{data}{A data frame}
+
+\item{wts}{A non-negative numeric vector of weights.}
+
+\item{digits}{Number of digits to use for summary stats.}
+
+\item{...}{Other arguments passed to summ_num.}
+}
+\value{
+A data frame.
 }
 \description{
 Table 1 for numeric variables

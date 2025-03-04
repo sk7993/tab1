@@ -4,7 +4,7 @@
 \alias{smd_num}
 \title{SMD for numeric variables}
 \usage{
-smd_num(x, grp, wts = NULL)
+smd_num(x, grp, wts = NULL, denom = "unweighted", abs = TRUE, digits = 3)
 }
 \arguments{
 \item{x}{A numeric vector}
@@ -12,7 +12,13 @@ smd_num(x, grp, wts = NULL)
 \item{grp}{A factor of same length as `x` specifying groups.
 If not a factor, then the vector will be coerced.}
 
+\item{wts}{A non-negative numeric vector of weights.}
+
+\item{denom}{Specifies how the denominator is calculated.}
+
 \item{abs}{Logical specifying whether to return absolute SMD (default is TRUE).}
+
+\item{digits}{Integer indicating number of decimal places.}
 }
 \value{
 A named numeric vector of length `choose(unique(grp), 2)`.

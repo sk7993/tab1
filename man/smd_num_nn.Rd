@@ -9,10 +9,13 @@ smd_num_nn(x, grp, ...)
 \arguments{
 \item{x}{Numeric vector of data values}
 
-\item{grp}{Vector of same length as `x` specifying grouping for for
-data values}
+\item{grp}{A factor of same length as `x` specifying groups.
+If not a factor, then the vector will be coerced.}
 
 \item{...}{Additional arguments passed to `smd_num`.}
+}
+\value{
+A named numeric vector
 }
 \description{
 SMD for skewed/non-normal numeric variables

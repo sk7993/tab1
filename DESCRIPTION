@@ -1,20 +1,24 @@
 Package: tab1
 Type: Package
 Title: Create Publication Quality Table 1
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person(
       "Karan", "Shah",
-      email = "karankshah95 [at] gmail.com",
+      email = "karankshah95@gmail.com",
       role = c("aut", "cre")
     )
   )
 Maintainer: Karan Shah <karankshah95@gmail.com>
 Description: Create publication quality Table 1.
-License: GPL (>= 3)
+License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Imports: 
+    stats,
+    utils,
+    flextable

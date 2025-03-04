@@ -7,7 +7,6 @@
 
 - SMD
   - Add support for summarizing ASDs (min, max etc.)
-  - Support option for using weighted/unweighted denom. for SMD (WIP)
 
 - pub_tab1
   - Conditional precision/rounding based on value

@@ -5,13 +5,10 @@
 #' @param digits Number of digits to round to (default is 2).
 #'
 #' @returns Returns (weighted) arithmetic mean of values in x.
-#' @export
-#'
-#' @examples
 summ_num <- function(x, wts = NULL, digits = 2) {
 
   if (!(is.numeric(digits) & length(digits) == 1)) {
-    error("`digits` must be a numeric vector of length 1.")
+    stop("`digits` must be a numeric vector of length 1.")
   }
 
   len <- length(x)
@@ -32,14 +29,12 @@ summ_num <- function(x, wts = NULL, digits = 2) {
 
 #' Summarize non-normal numeric variables
 #'
-#' @param x
-#' @param digits
-#' @param delim
+#' @param x A numeric vector.
+#' @param wts A numeric vector of weights (optional).
+#' @param digits Number of digits to round to (default is 2).
+#' @param delim Delimiter to use for separating values.
 #'
-#' @returns
-#' @export
-#'
-#' @examples
+#' @returns A string with median [Q1, Q3]
 summ_num_nn <- function(x,
                         wts = NULL,
                         digits = 0,
@@ -74,13 +69,11 @@ summ_num_nn <- function(x,
 
 #' Summarize categorical variables
 #'
-#' @param x
-#' @param digits
+#' @param x A factor vector.
+#' @param wts A non-negative vector of weights.
+#' @param digits Number of decimal places to use
 #'
 #' @returns (Weighted) proportions for values in `x`.
-#' @export
-#'
-#' @examples
 summ_fac <- function(x,
                      wts = NULL,
                      digits = 0){
@@ -97,10 +90,15 @@ summ_fac <- function(x,
   prop <- 100*prop
   prop <- round(prop, digits)
 
-  s <- sprintf("%s (%s%%)",
-          tab,
-          prop) |>
-    stats::setNames(names(tab))
+  if (all(wts == 1)){
+    s <- sprintf("%s (%s%%)",
+                 tab,
+                 prop) |>
+      stats::setNames(names(tab))
+  } else {
+    s <- sprintf("%s", prop) |>
+      stats::setNames(names(tab))
+  }
 
   return(s)
 }
