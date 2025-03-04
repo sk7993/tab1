@@ -24,7 +24,12 @@ pub_tab1(
 A flextable object.
 }
 \description{
-Create publication quality table 1 from tab1 object
+Creates a publication ready table from tab1 output using `flextable`
+}
+\details{
+The function will output a flextable object which can be modified further
+depending on user needs. See here for helpful commands:
+https://ardata-fr.github.io/flextable-book/static/pdf/cheat_sheet_flextable.pdf
 }
 \examples{
 tab1(iris, "Species") |>

@@ -1,5 +1,13 @@
 #' Create publication quality table 1 from tab1 object
 #'
+#' @description
+#' Creates a publication ready table from tab1 output using `flextable`
+#'
+#' @details
+#' The function will output a flextable object which can be modified further
+#' depending on user needs. See here for helpful commands:
+#' https://ardata-fr.github.io/flextable-book/static/pdf/cheat_sheet_flextable.pdf
+#'
 #' @param tab1 Data frame output from `tab1` function.
 #' @param lbl_nm Summary statistic label for numeric variables.
 #' @param lbl_nn Summary statistic label for non-numeric variables.
