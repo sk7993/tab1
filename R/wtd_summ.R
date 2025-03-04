@@ -1,3 +1,14 @@
+wtd.tbl <- function(x, weights = NULL){
+  if (is.null(weights)) {
+    return(table(x, ...))
+  }
+  if (!is.factor(x)) {
+    x <- factor(x)
+  }
+  if (!is.null(weights)) {
+    tapply(weights, x, sum, na.rm = TRUE, default = 0)
+  }
+}
 # Slightly modified helper functions from `Hmisc` to calculate weighted quantiles
 ## Copyright (C) 2001 Frank E Harrell Jr
 ##
