@@ -108,6 +108,7 @@ tab1 <- function(data, grp,
 #'
 #' @examples
 tab1_ug <- function(data,
+                    wts = NULL,
                     nonnormal = NULL,
                     num_digits = 2,
                     numnn_digits = 0,
@@ -129,21 +130,34 @@ tab1_ug <- function(data,
   # Get summary tables--------------
   t_num <- do.call("tab1_num",
                    c(list(data[setdiff(var_names, nonnormal)]),
-                     num_digits)
+                     list(wts = wts),
+                     digits = num_digits)
                    )
 
   t_num_nn <- do.call("tab1_num_nn",
                       c(list(data[nonnormal]),
-                            numnn_digits))
+                        list("wts" = wts),
+                        list(digits = numnn_digits)))
 
   t_fac <- do.call("tab1_fac",
                    c(list(data),
-                     fac_digits))
+                     list(wts = wts),
+                     digits = fac_digits))
+
+  miss <- sapply(data, \(x) sum(is.na(x)))
+  miss <- data.frame(var = names(miss),
+                     missing = unname(miss))
+
+  res <- rbind(t_num,
+               t_num_nn,
+               t_fac)
+
+  res <- merge(res, miss, by = "var",
+               all.x = TRUE,
+               sort = FALSE)
 
   # Combine summary tables-----------------
-  return(rbind(t_num,
-        t_num_nn,
-        t_fac))
+  return(res)
 }
 
 #' Table 1 for numeric variables
@@ -154,7 +168,7 @@ tab1_ug <- function(data,
 #' @returns
 #'
 #' @examples
-tab1_num <- function(data, digits = 2, ...) {
+tab1_num <- function(data, wts = NULL, digits = 2, ...) {
 
   args <- as.list(match.call())[-(1:2)]
 
@@ -193,7 +207,9 @@ tab1_num <- function(data, digits = 2, ...) {
 #' @returns
 #'
 #' @examples
-tab1_num_nn <- function(data, opts = NULL) {
+tab1_num_nn <- function(data, wts = NULL, digits = 2, ...) {
+
+  args <- as.list(match.call())[-(1:2)]
 
   # Checks-------------------
   if (nrow(data) == 0 |
@@ -208,7 +224,7 @@ tab1_num_nn <- function(data, opts = NULL) {
   # Output summary--------------------------
   res <- rapply(data,
          \(x) do.call(summ_num_nn,
-                      c(list(x), opts)),
+                      c(list(x), args)),
          "numeric",
          how = "unlist")
 
@@ -229,7 +245,9 @@ tab1_num_nn <- function(data, opts = NULL) {
 #' @returns
 #'
 #' @examples
-tab1_fac <- function(data, opts = NULL) {
+tab1_fac <- function(data, wts = NULL, digits = 0, ...) {
+
+  args <- as.list(match.call())[-(1:2)]
 
   # Checks---------------------------
   if (nrow(data) == 0 |
@@ -245,7 +263,7 @@ tab1_fac <- function(data, opts = NULL) {
   # Outputs list whose elements are dataframes
   res <- lapply(factor_vars, \(x){
     d <- data[[x]]
-    s <- do.call(summ_fac, c(list(d), opts))
+    s <- do.call(summ_fac, c(list(d), args))
     s <- create_summary_df(
       var = c(x, names(s)),
       parent_var = x,

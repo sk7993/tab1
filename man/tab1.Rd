@@ -14,10 +14,19 @@ tab1(
 )
 }
 \arguments{
-\item{lbl}{A named list of the form `list(old_name = new_name)` to rename the
-variables in tab1. Must be of the same length as `var` col in tab1.}
+\item{data}{A data frame.}
 
-\item{opts_summ}{}
+\item{grp}{A character variable specifying the grouping variable.}
+
+\item{vars}{A character vector specifying the variables to summarize.}
+
+\item{nonnormal}{A character vector specifying which variables to treat as
+skewed/nonnormal.}
+
+\item{lbl}{A named list of the form `list(old_name = new_name)` to rename the
+variables in tab1. Must be of the same length as `var` col in tab1 (optional)}
+
+\item{opts_summ}{A list specifying additional options for summarizing.}
 }
 \description{
 Create Table 1

@@ -82,8 +82,15 @@ summ_num_nn <- function(x,
 #'
 #' @examples
 summ_fac <- function(x,
+                     wts = NULL,
                      digits = 0){
-  tab <- table(x) |>
+
+  len <- length(x)
+  if (is.null(wts)) {
+    wts <- rep(1, times = len)
+  }
+
+  tab <- wtd.table(x, wts, type = "table") |>
     round(digits)
   prop <- tab |>
     prop.table()

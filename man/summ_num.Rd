@@ -4,10 +4,17 @@
 \alias{summ_num}
 \title{Summarize numeric variables}
 \usage{
-summ_num(x, digits = 2)
+summ_num(x, wts = NULL, digits = 2)
 }
 \arguments{
-\item{digits}{}
+\item{x}{A numeric vector.}
+
+\item{wts}{A numeric vector of weights (optional).}
+
+\item{digits}{Number of digits to round to (default is 2).}
+}
+\value{
+Returns (weighted) arithmetic mean of values in x.
 }
 \description{
 Summarize numeric variables

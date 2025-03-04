@@ -3,6 +3,7 @@
 - tab1 
   - Add support for weighted data WIP
     - Effective sample size
+  - Support for normalizing weights (for counts in wtd data)
 - SMD
   - Add support for weighted data
   - Add support for summarizing ASDs (min, max etc.)
@@ -14,13 +15,3 @@
   - add support for arbitrary functions and formatting
 
 # DONE
-
-- General
-   - Do a better job of organizing parameter passing between functions
-
-- SMD
-  - Define basic SMD functions - DONE
-  - Add support for any # of groups - DONE
-- pub_tab1
-  - Create function for making publication ready table
-  - Add support for labels

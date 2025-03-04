@@ -13,9 +13,15 @@ tab1_ug(
 )
 }
 \arguments{
-\item{data}{data}
+\item{data}{A data frame.}
 
 \item{nonnormal}{Character vector specifying non-normal variables.}
+
+\item{num_digits}{Number of digits for numeric variables.}
+
+\item{fac_digits}{Number of digits for summaries of factor variables.}
+
+\item{num_nn_digits}{Number of digits for sumamry of non-normal numeric variables.}
 }
 \description{
 This function is the workhorse of the `tab1` function. It is not intended

@@ -4,7 +4,7 @@
 \alias{summ_num_nn}
 \title{Summarize non-normal numeric variables}
 \usage{
-summ_num_nn(x, digits = 0, delim = ",")
+summ_num_nn(x, wts = NULL, digits = 0, delim = ",")
 }
 \arguments{
 \item{delim}{}

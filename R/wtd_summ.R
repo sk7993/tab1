@@ -15,6 +15,24 @@
 ## as http://www.gnu.org/copyleft or by writing to the Free Software
 ## Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+"%nin%" <- function (x, table) {
+  match(x, table, nomatch = 0) == 0
+}
+all.is.numeric <- function (x, what = c("test", "vector", "nonnum"), extras = c(".",
+                                                              "NA"))
+{
+  what <- match.arg(what)
+  x <- sub("[[:space:]]+$", "", x)
+  x <- sub("^[[:space:]]+", "", x)
+  xs <- x[x %nin% c("", extras)]
+  if (!length(xs) || all(is.na(x)))
+    return(switch(what, test = FALSE, vector = x, nonnum = x[0]))
+  isnon <- suppressWarnings(!is.na(xs) & is.na(as.numeric(xs)))
+  isnum <- !any(isnon)
+  switch(what, test = isnum, vector = if (isnum) suppressWarnings(as.numeric(x)) else x,
+         nonnum = xs[isnon])
+}
+
 wtd.mean <- function (x, weights = NULL, normwt = "ignored", na.rm = TRUE)
 {
   if (!length(weights))

@@ -86,7 +86,7 @@ smd <- function(data, grp, nonnormal = NULL, ...){
 #' @export
 #'
 #' @examples
-smd_num <- function(x, grp){
+smd_num <- function(x, grp, wts = NULL){
 
   if (length(x) != length(grp)) {
     stop("`x` and `grp` vectors must be of equal length.")
@@ -96,16 +96,26 @@ smd_num <- function(x, grp){
     stop("At least two groups are needed to compute SMD.")
   }
 
+  if (is.null(wts)) {
+    wts <- rep(1, length(x))
+  }
+
   # Coerce grouping variable to factor-----
  if (!is.factor(grp)) {
    grp <- factor(grp)
  }
   # Compute pairwise SMD for each group------
-  x_split <- split(x, grp)
+  x_split <- split(data.frame("x" = x,
+                              "wts" = wts),
+                   grp)
   smd <- combn(levels(grp), 2, FUN = \(p) {
     g1 <- p[1]
     g2 <- p[2]
-    res <- compute_smd_num(x_split[[g1]], x_split[[g2]])
+    x1 <- x_split[[g1]][["x"]]
+    x2 <- x_split[[g2]][["x"]]
+    wts1 <- x_split[[g1]][["wts"]]
+    wts2 <- x_split[[g2]][["wts"]]
+    res <- compute_smd_num(x1, x2, wts1, wts2)
     names(res) <- sprintf("smd_%s vs %s", g1, g2)
     return(res)
   },
@@ -122,12 +132,23 @@ smd_num <- function(x, grp){
 #' @param abs
 #'
 #' @returns
-#' @export
 #'
 #' @examples
-compute_smd_num <- function(x1, x2, abs = TRUE, digits = 3) {
-  mu1 <- mean(x1, na.rm = TRUE)
-  mu2 <- mean(x2, na.rm = TRUE)
+compute_smd_num <- function(x1, x2,
+                            wts1 = NULL,
+                            wts2 = NULL,
+                            abs = TRUE, digits = 3) {
+  if ((is.null(wts1) & !is.null(wts2)) |
+      (!is.null(wts1) & is.null(wts2))) {
+    stop("Must specify both `wts1` and `wts2`, not just one.")
+  }
+  if (is.null(wts1) & is.null(wts2)) {
+    wts1 <- rep(1, length(x1))
+    wts2 <- rep(1, length(x2))
+  }
+
+  mu1 <- wtd.mean(x1, wts1, na.rm = TRUE)
+  mu2 <- wtd.mean(x2, wts2, na.rm = TRUE)
   diff <- mu2 - mu1
   if (abs == TRUE) {
     diff <- abs(diff)
@@ -164,7 +185,8 @@ smd_num_nn <- function(x, grp, ...){
 #' @export
 #'
 #' @examples
-smd_fac <- function(x, grp, digits = 3){
+smd_fac <- function(x, grp, wts,
+                    digits = 3){
 
   if (!is.factor(x)) {
     x <- factor(x)
@@ -206,10 +228,22 @@ smd_fac <- function(x, grp, digits = 3){
 #' @export
 #'
 #' @examples
-compute_smd_fac <- function(x1, x2, digits = 3){
+compute_smd_fac <- function(x1, x2,
+                            wts1 = NULL,
+                            wts2 = NULL,
+                            digits = 3){
+
+  if ((is.null(wts1) & !is.null(wts2)) |
+      (!is.null(wts1) & is.null(wts2))) {
+    stop("Must specify both `wts1` and `wts2`, not just one.")
+  }
+  if (is.null(wts1) & is.null(wts2)) {
+    wts1 <- rep(1, length(x1))
+    wts2 <- rep(1, length(x2))
+  }
 
   # Diff in proportions
-  x1_p <- prop.table(table(x1))[-1]
+  x1_p <- prop.table(wtd.table(x1))[-1]
   x2_p <- prop.table(table(x2))[-1]
   d <- x2_p - x1_p
 
