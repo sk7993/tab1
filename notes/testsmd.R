@@ -51,14 +51,15 @@ smd(iris2 |> splitfactor() |>
 col_w_smd(iris2 |> splitfactor(), iris2$g, weights = wts, abs = TRUE) |>
   round(3)
 
-###
+### Test weighted SMD
 set.seed(123)
 iris2 <- cbind(iris, g = rep(c(1,2),
                              each = 75))
 wts <- rnorm(150, 5)
 
-tab1(iris2, "g", wts = w)
-bal.tab(iris2, iris2$g, weights = w)
+tab1(iris2, "g", wts = wts, opts_smd = list(abs = FALSE)) |> pub_tab1()
+
+cobalt::bal.tab(iris2, iris2$g, weights = wts)
 
 ###
 library(tableone)
@@ -71,10 +72,16 @@ nhanesSvy <- svydesign(ids = ~ 1, weights = ~ WTMEC2YR, data = nhanes)
 ## Create a table object
 ## factorVars are converted to factors; no need for variables already factors
 ## strata will stratify summaries; leave it unspecified for overall summaries
-svyCreateTableOne(vars = c("HI_CHOL","race","agecat","RIAGENDR"),
+tableone::svyCreateTableOne(vars = c("HI_CHOL","race","agecat","RIAGENDR"),
                           strata = "RIAGENDR", data = nhanesSvy,
                           factorVars = c("race","RIAGENDR"), test = FALSE) |>
   print(smd = TRUE)
+
+smd(nhanes |>
+      dplyr::mutate(race = factor(race)),
+    grp = "RIAGENDR",
+    denom = "weighted",
+    wts = nhanes$WTMEC2YR)
 
 tab1(nhanes |>
        dplyr::mutate(race = factor(race)),

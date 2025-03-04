@@ -163,7 +163,7 @@ wtd.table <- function (x, weights = NULL, type = c("list", "table"), normwt = FA
   type <- match.arg(type)
   if (!length(weights))
     weights <- rep(1, length(x))
-  isdate <- testDateTime(x)
+  isdate <- FALSE
   ax <- attributes(x)
   ax$names <- NULL
   if (is.character(x))

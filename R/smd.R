@@ -8,8 +8,12 @@
 #' @export
 #'
 #' @examples
-smd <- function(data, grp, wts = NULL,
-                nonnormal = NULL, ...){
+smd <- function(data, grp,
+                wts = NULL,
+                nonnormal = NULL,
+                abs = TRUE,
+                denom = "unweighted",
+                digits = 3){
 
   if (!is.character(grp) | length(grp) != 1) {
     stop("`grp` must be a character vector of length 1.")
@@ -18,9 +22,9 @@ smd <- function(data, grp, wts = NULL,
   if (is.null(data[[grp]])) {
     stop("`grp` variable not found in `data`.")
   }
-  # Coerce character to factor
+  # Coerce character to factor-------
   data <- rapply(data, as.factor, "character", how = "replace")
-   # Subset data-----
+  # Subset data-----
   data_sub <- data[names(data) != grp]
 
   f1 <- function(x){
@@ -28,31 +32,46 @@ smd <- function(data, grp, wts = NULL,
       as.list() |>
       list2DF()
   }
-  # Get SMDs by variable type
+  # Get SMDs by variable type---------------
+  opts_num <- list(
+    grp = data[[grp]],
+    denom = denom,
+    wts = wts,
+    abs = abs,
+    digits = digits
+  )
   res_num <- rapply(data[setdiff(names(data_sub), nonnormal)],
-                    smd_num,
+                    \(x, opts) do.call(smd_num,
+                                       c(list(x),
+                                         opts)
+                    ),
                     c("numeric", "integer"),
                     how = "list",
-                    grp = data[[grp]],
-                    wts = wts
-                    )
+                    opts = opts_num)
 
-  res_num_nn <- rapply(data_sub[nonnormal],
-                       smd_num_nn,
+  res_num_nn <- rapply(data[nonnormal],
+                       \(x, opts) do.call(smd_num_nn,
+                                          c(list(x),
+                                            opts)
+                       ),
                        c("numeric", "integer"),
                        how = "list",
-                       grp = data[[grp]],
-                       wts = wts)
+                       opts = opts_num)
+
+  opts_fac <- list(
+    grp = data[[grp]],
+    denom = denom,
+    wts = wts,
+    digits = digits
+  )
 
   res_fac <- rapply(data_sub,
-                    smd_fac,
+                    \(x, opts) do.call(smd_fac, c(list(x), opts)),
                     "factor",
                     how = "list",
-                    grp = data[[grp]],
-                    wts = wts
-                    )
+                    opts = opts_fac)
 
-  # Combine results for numeric type variables
+  # Combine results for numeric variables--------
   res1 <- c(res_num, res_num_nn)
 
   if (all(sapply(res1, is.null))) {
@@ -63,7 +82,7 @@ smd <- function(data, grp, wts = NULL,
       rbind2("var")
   }
 
-  # Combine results for factor variables
+  # Combine results for factor variables----------
   if (all(sapply(res_fac, is.null))) {
     res2 <- NULL
   } else {
@@ -93,7 +112,9 @@ smd <- function(data, grp, wts = NULL,
 #' @export
 #'
 #' @examples
-smd_num <- function(x, grp, wts = NULL){
+smd_num <- function(x, grp,
+                    wts = NULL, denom = "unweighted",
+                    abs = TRUE, digits = 3){
 
   if (length(x) != length(grp)) {
     stop("`x` and `grp` vectors must be of equal length.")
@@ -111,21 +132,26 @@ smd_num <- function(x, grp, wts = NULL){
  if (!is.factor(grp)) {
    grp <- factor(grp)
  }
+  opts = as.list(match.call())[-c(1:4)]
   # Compute pairwise SMD for each group------
   x_split <- split(data.frame("x" = x,
                               "wts" = wts),
                    grp)
-  smd <- combn(levels(grp), 2, FUN = \(p) {
+  smd <- combn(levels(grp), 2, FUN = \(p, opts) {
     g1 <- p[1]
     g2 <- p[2]
     x1 <- x_split[[g1]][["x"]]
     x2 <- x_split[[g2]][["x"]]
     wts1 <- x_split[[g1]][["wts"]]
     wts2 <- x_split[[g2]][["wts"]]
-    res <- compute_smd_num(x1, x2, wts1, wts2)
+    res <- do.call(compute_smd_num,
+                   c(list(x1, x2, wts1, wts2),
+                     opts))
+    #res <- compute_smd_num(x1, x2, wts1, wts2, denom, digits)
     names(res) <- sprintf("smd_%s vs %s", g1, g2)
     return(res)
   },
+  opts = opts,
   simplify = FALSE) |>
     unlist()
 
@@ -145,7 +171,8 @@ compute_smd_num <- function(x1, x2,
                             wts1 = NULL,
                             wts2 = NULL,
                             denom = "unweighted",
-                            abs = TRUE, digits = 3) {
+                            abs = TRUE,
+                            digits = 3) {
   if ((is.null(wts1) & !is.null(wts2)) |
       (!is.null(wts1) & is.null(wts2))) {
     stop("Must specify both `wts1` and `wts2`, not just one.")
@@ -199,7 +226,9 @@ smd_num_nn <- function(x, grp, ...){
 #' @export
 #'
 #' @examples
-smd_fac <- function(x, grp, wts = NULL,
+smd_fac <- function(x, grp,
+                    wts = NULL,
+                    denom = "unweighted",
                     digits = 3){
 
   if (!is.factor(x)) {
@@ -221,26 +250,29 @@ smd_fac <- function(x, grp, wts = NULL,
   if (is.null(wts)) {
     wts <- rep(1, length(x))
   }
-
+  # Select options to pass to `compute_smd_fac`
+  opts = as.list(match.call())[-c(1:4)]
  # Compute pairwise ASD for each group------
   x_split <- split(data.frame("x" = x,
                               "wts" = wts),
                    grp)
 
-  smd <- combn(levels(grp), 2, FUN = \(p) {
+  smd <- combn(levels(grp), 2,
+               FUN = \(p, opts) {
     g1 <- p[1]
     g2 <- p[2]
     x1 <- x_split[[g1]][["x"]]
     x2 <- x_split[[g2]][["x"]]
     w1 <- x_split[[g1]][["wts"]]
     w2 <- x_split[[g2]][["wts"]]
-    res <- compute_smd_fac(x1, x2,
-                           w1,
-                           w2,
-                           digits)
+    res <- do.call("compute_smd_fac",
+                   c(list(x1 = x1, x2 = x2,
+                          wts1 = w1, wts2 = w2),
+                   opts))
     names(res) <- sprintf("smd_%s vs %s", g1, g2)
     return(res)
   },
+  opts = opts,
   simplify = FALSE) |>
     unlist()
 
@@ -253,7 +285,6 @@ smd_fac <- function(x, grp, wts = NULL,
 #' @param x2
 #'
 #' @returns
-#' @export
 #'
 #' @examples
 compute_smd_fac <- function(x1, x2,

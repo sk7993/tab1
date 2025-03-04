@@ -1,14 +1,10 @@
-#' Compute ASD threshold
-#'
-#' @param n1 Sample size for group 1
-#' @param n2 Sample size for group 2
-#'
-#' @returns ASD threshold (numeric vector of length 1)
-#'
-#' @examples
+# Compute ASD threshold--------
 asd_threshold <- function(n1, n2, digits = 3){
   round(1.96*sqrt(1/n1 + 1/n2), 3)
 }
+
+# `rbind` wrapper that adds an ID column representing the data frame's
+# source list element name-----------
 
 rbind2 <- function(df_list, id_col = "id"){
 
@@ -30,9 +26,9 @@ rbind2 <- function(df_list, id_col = "id"){
   return(res)
 }
 
+# Simple wrapper for `merge` that preserves order
+# based on the left data frame -----------------
 merge2 <- function(x, y, ...){
-  # Simple wrapper around merge that preserves order
-  # based on the left data frame.
   nm <- "._sort&"
   x[[nm]] <- seq_len(nrow(x))
   res <- merge(x, y, ...)

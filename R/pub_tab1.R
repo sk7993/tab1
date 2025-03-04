@@ -19,12 +19,14 @@ pub_tab1 <- function(tab1,
   # Clean up variable names
   names(tab1) <- gsub("summ_", "", names(tab1))
   names(tab1) <- gsub("smd_", "ASD: ", names(tab1))
+  names(tab1)[names(tab1) == "var"] <- "Characteristic"
+  names(tab1)[names(tab1) == "missing"] <- "Missing, n (%)"
 
   # Append summary stats label to variables
 
   tab1$var[tab1$type == "numeric"] <- sprintf("%s, %s",
-                                              tab1$var[tab1$type == "numeric"],
-                                              lbl_nm)
+                                                tab1$var[tab1$type == "numeric"],
+                                                lbl_nm)
 
   tab1$var[tab1$type == "numeric_nn"] <- sprintf("%s, %s",
                                                  tab1$var[tab1$type == "numeric_nn"],
@@ -39,6 +41,7 @@ pub_tab1 <- function(tab1,
   tab1 <- tab1[,-c(2:3)]
   #
   res <- flextable::flextable(tab1) |>
+    flextable::bold(part = "header") |>
     # Italicize and indent subcategories
     flextable::italic(i = idx_sg, j = 1) |>
     flextable::padding(i = idx_sg, j = 1,

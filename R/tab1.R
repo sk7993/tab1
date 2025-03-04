@@ -1,27 +1,51 @@
 #' Create Table 1
 #'
+#'
 #' @param data A data frame.
 #' @param grp A character variable specifying the grouping variable.
 #' @param vars A character vector specifying the variables to summarize.
-#' @param nonnormal A character vector specifying which variables to treat as
+#' @param nonnormal A character vector specifying variables to be treated as
 #' skewed/nonnormal.
 #' @param lbl A named list of the form `list(old_name = new_name)` to rename the
 #' variables in tab1. Must be of the same length as `var` col in tab1 (optional)
-#' @param opts_summ A list specifying additional options for summarizing.
+#' @param opts_summ A list specifying additional options for summarizing variables.
+#' Currently supports the following options:
+#'  -
+#' @param opts_smd A list specifying options for SMD calculations. Supports the
+#' following options:
+#'  - denom: A character vector specifying how to handle denominators when
+#'  calculating SMD. See details.
+#'  - abs: Logical specifying whether to return absolute SMD. Default is TRUE.
 #'
-#' @returns A data frame.
+#'
+#' @returns A data frame with summary statistics and pairwise SMDs.
 #' @export
 #'
 #' @examples
+#' # Run with defaults
+#' tab1(iris, grp = "Species")
+#' # Available options
+#' tab1(iris, grp = "Species", nonnormal = "Sepal.Width",
+#' opts_summ = list(num_digits = 3,
+#' numnn_digits = 2),
+#' opts_smd = list(abs = FALSE))
+#' # Weighted data
+#' set.seed(123)
+#' w <- rnorm(length(iris))
+#' # IMPORTANT: Note the difference in how denominator is calculated
+#' tab1(iris, "Species")
+#' tab1(iris, "Species", opts_smd = list(denom = "weighted"))
 tab1 <- function(data, grp,
                  wts = NULL,
+                 normwts = FALSE,
                  vars = NULL,
                  nonnormal = NULL,
                  lbl = NULL,
                  opts_summ = list(num_digits = 2,
                              numnn_digits = 0,
                              fac_digits = 1),
-                 opts_smd = list()) {
+                 opts_smd = list(denom = "unweighted",
+                                 abs = TRUE)) {
 
   if (!is.character(grp) | length(grp) != 1) {
     stop("`grp` must be a character vector of length 1.")
@@ -43,6 +67,10 @@ tab1 <- function(data, grp,
   if (is.null(wts)) {
     wts <- rep(1, nrow(data))
   }
+
+  # if (normwts) {
+  #   wts <- nrow(data)
+  # }
 
   # Subset data based on specified vars--------------
   data_sub <- data[names(data) != grp]
@@ -73,9 +101,12 @@ tab1 <- function(data, grp,
     )
 
   # Missing-------
-  miss <- sapply(data, \(x) sum(is.na(x)))
+  miss <- sapply(data_sub, \(x) sum(is.na(x)))
+  miss_perc <- sapply(data_sub, \(x) round(100*sum(is.na(x))/length(x), 2))
   miss <- data.frame(var = names(miss),
-                     missing = unname(miss))
+                     missing = sprintf("%s (%s%%)",
+                                       miss,
+                                       miss_perc))
 
   tab <- merge2(tab, miss,
                 by = "var",
@@ -111,9 +142,13 @@ tab1 <- function(data, grp,
     res2 <- NULL
   }
 
-  return(do.call("rbind",
+  res <- do.call("rbind",
                  list(res1, res2))
-  )
+  # Relocate missing col to last
+  miss <- res[["missing"]]
+  res <- res[,-match("missing", names(res))]
+  res[["missing"]] <- miss
+  return(res)
 }
 
 #' Construct table 1 (no groups)
