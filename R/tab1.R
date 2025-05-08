@@ -308,7 +308,7 @@ tab1_num_nn <- function(data, wts = NULL, digits = 2, ...) {
          how = "unlist")
 
   res <- create_summary_df(var = names(res),
-                           parent_var = NA,
+                           parent_var = names(res),
                            type = "numeric_nn",
                            summ = unname(res))
 
