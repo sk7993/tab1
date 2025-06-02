@@ -66,14 +66,6 @@ tab1 <- function(data, grp,
     stop("`grp` must be a character vector of length 1.")
   }
 
-  if (!is.null(lbl)) {
-    if (all(names(lbl) %in% names(data))) {
-      names(data) <- unlist(lbl[names(data)])
-      grp <- lbl[[grp]]
-    } else {
-      stop("`lbl` must be a named list with names matching variables in the dataframe.")
-    }
-  }
 
   if (is.null(data[[grp]])) {
     stop("`grp` variable not found in `data`.")
@@ -92,6 +84,14 @@ tab1 <- function(data, grp,
 
   if (!is.null(vars)) {
     data_sub <- data_sub[vars]
+  }
+
+  if (!is.null(lbl)) {
+    if (all(names(data_sub) %in% names(lbl))) {
+      names(data) <- unlist(lbl[names(data)])
+    } else {
+      stop("`lbl` must be a named list with names matching variables in the dataframe.")
+    }
   }
 
   # Get summary stats by group
