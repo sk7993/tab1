@@ -91,7 +91,7 @@ tab1 <- function(data, grp,
   # Set labels -------------------------------------
   if (!is.null(lbl)) {
     if (all(names(data_sub) %in% names(lbl))) {
-      names(data) <- unlist(lbl[names(data)])
+      names(data_sub) <- unlist(lbl[names(data_sub)])
     } else {
       stop("`lbl` must be a named list with names matching variables in the dataframe.")
     }
