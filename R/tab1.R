@@ -79,13 +79,16 @@ tab1 <- function(data, grp,
     stop("Data frame and weights must have the same length.")
   }
 
+
   # Subset data based on specified vars--------------
+
   data_sub <- data[names(data) != grp]
 
   if (!is.null(vars)) {
     data_sub <- data_sub[vars]
   }
 
+  # Set labels -------------------------------------
   if (!is.null(lbl)) {
     if (all(names(data_sub) %in% names(lbl))) {
       names(data) <- unlist(lbl[names(data)])
@@ -101,7 +104,7 @@ tab1 <- function(data, grp,
   tab <- by(cbind(data_sub, "__w" = wts),
              data[[grp]],
              \(x, opts) do.call("tab1_ug",
-                                c(list(x[,-ncol(x)]),
+                                c(list(x[,-ncol(x), drop = FALSE]),
                                   list("wts" = x[[ncol(x)]]),
                                   opts)),
              opts = opts_summ)|>
