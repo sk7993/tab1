@@ -82,18 +82,27 @@ tab1 <- function(data, grp,
   if (is.null(vars)) {
     vars <- names(data)[names(data) != grp]
   }
+
+  get_lbl_nm <- function(lbl, old_names){
+    # Helper function that returns
+    # new label names given original variable names
+    lbl[old_names] |> unlist()
+  }
+
   # Subset data based on specified vars--------------
+  data_sub <- data[vars]
 
-  data_sub <- data[names(data) != grp]
-  data_sub <- data_sub[vars]
-
-
-  # Set labels -------------------------------------
+  # Replace original var names with labels where applicable ---------
   if (!is.null(lbl)) {
-    if (all(names(data_sub) %in% names(lbl))) {
-      names(data_sub) <- unlist(lbl[names(data_sub)])
+    chk <- identical(sort(names(data_sub)),
+                     sort(names(lbl)))
+    if (chk) {
+      names(data_sub) <- get_lbl_nm(lbl, names(data_sub))
+      nonnormal = get_lbl_nm(lbl, nonnormal)
+      vars <- unname(lbl) |> unlist()
+      rm(chk)
     } else {
-      stop("`lbl` must be a named list with names matching variables in the dataframe.")
+      stop("`lbl` must be a named list of the form `list(old_name = new_name)` with the same length as `vars` argument or number of variables in dataframe.")
     }
   }
 
