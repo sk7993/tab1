@@ -79,14 +79,14 @@ tab1 <- function(data, grp,
     stop("Data frame and weights must have the same length.")
   }
 
-
+  if (is.null(vars)) {
+    vars <- names(data)[names(data) != grp]
+  }
   # Subset data based on specified vars--------------
 
   data_sub <- data[names(data) != grp]
+  data_sub <- data_sub[vars]
 
-  if (!is.null(vars)) {
-    data_sub <- data_sub[vars]
-  }
 
   # Set labels -------------------------------------
   if (!is.null(lbl)) {
@@ -166,6 +166,13 @@ tab1 <- function(data, grp,
   miss <- res[["missing"]]
   res <- res[,-match("missing", names(res))]
   res[["missing"]] <- miss
+
+  # Change variables to original order
+
+  res["order"] = match(res$parent_var,
+                         vars)
+  res <- res[order(res$order),]
+  res["order"] = NULL
 
   # Add sample sizes
   if (all(wts == 1)) {
