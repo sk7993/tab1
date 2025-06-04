@@ -121,7 +121,7 @@ tab1 <- function(data, grp,
     # Change from long to wide format
     reshape(
       direction = "wide",
-      idvar = c("var", "parent_var"),
+      idvar = c("var", "parent_var", "type"),
       timevar = "group",
       v.names = "summ",
       sep = "_"
