@@ -190,7 +190,7 @@ tab1 <- function(data, grp,
     n <- tapply(wts, data[[grp]], ess)
   }
 
-  res[nrow(res) + 1,] <- c("n", "n", NA,
+  res[nrow(res) + 1,] <- c("n", "n", "other",
                            n,
                            rep(NA,
                                ncol(res) - length(n) - 3))
