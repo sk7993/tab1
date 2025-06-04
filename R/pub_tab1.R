@@ -26,17 +26,11 @@ pub_tab1 <- function(tab1,
                      lbl_nn = "median [Q1, Q3]",
                      lbl_fac = "n (%)"){
 
-  # Clean up variable names
-  names(tab1) <- gsub("summ_", "", names(tab1))
-  names(tab1) <- gsub("smd_", "ASD: ", names(tab1))
-  names(tab1)[names(tab1) == "var"] <- "Characteristic"
-  names(tab1)[names(tab1) == "missing"] <- "Missing, n (%)"
-
-  # Append summary stats label to variables
+  # Append summary stats label to variable names
 
   tab1$var[tab1$type == "numeric"] <- sprintf("%s, %s",
-                                                tab1$var[tab1$type == "numeric"],
-                                                lbl_nm)
+                                              tab1$var[tab1$type == "numeric"],
+                                              lbl_nm)
 
   tab1$var[tab1$type == "numeric_nn"] <- sprintf("%s, %s",
                                                  tab1$var[tab1$type == "numeric_nn"],
@@ -44,7 +38,13 @@ pub_tab1 <- function(tab1,
 
   tab1$var[tab1$type == "factor"] <- sprintf("%s, %s",
                                              tab1$var[tab1$type == "factor"],
-                                                 lbl_fac)
+                                             lbl_fac)
+
+  # Clean up variable names
+  names(tab1) <- gsub("summ_", "", names(tab1))
+  names(tab1) <- gsub("smd_", "ASD: ", names(tab1))
+  names(tab1)[names(tab1) == "var"] <- "Characteristic"
+  names(tab1)[names(tab1) == "missing"] <- "Missing, n (%)"
 
   # Identify vars that correspond to subcategories
   idx_sg <- which(tab1$type == "factor_lvl")
