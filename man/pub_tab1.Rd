@@ -8,7 +8,8 @@ pub_tab1(
   tab1,
   lbl_nm = "mean (SD)",
   lbl_nn = "median [Q1, Q3]",
-  lbl_fac = "n (\%)"
+  lbl_fac = "n (\%)",
+  bin_coll = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,9 @@ pub_tab1(
 \item{lbl_nn}{Summary statistic label for non-numeric variables.}
 
 \item{lbl_fac}{Summary statistic label for factor variables}
+
+\item{bin_coll}{Logical variable indicating whether to collapse factor variables
+with two categories.}
 }
 \value{
 A flextable object.
@@ -28,8 +32,10 @@ Creates a publication ready table from tab1 output using `flextable`
 }
 \details{
 The function will output a flextable object which can be modified further
-depending on user needs. See here for helpful commands:
-https://ardata-fr.github.io/flextable-book/static/pdf/cheat_sheet_flextable.pdf
+depending on user needs.
+
+If set to true, the `bin_coll` option will collapse binary categorical variables
+to a single row. The row will display summary statistics for the second level.
 }
 \examples{
 tab1(iris, "Species") |>

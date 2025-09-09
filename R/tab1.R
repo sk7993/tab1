@@ -24,7 +24,7 @@
 #' @param nonnormal A character vector specifying variables to be treated as
 #' skewed/nonnormal.
 #' @param lbl A named list of the form `list(old_name = new_name)` to rename the
-#' variables in tab1. Must be of the same length as `var` col in tab1 (optional)
+#' variables in tab1. Must be of the same length as the `vars` parameter (optional).
 #' @param opts_summ A list specifying additional options for summarizing variables.
 #' Currently supports the following options:
 #'  -

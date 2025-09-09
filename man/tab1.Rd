@@ -28,7 +28,7 @@ tab1(
 skewed/nonnormal.}
 
 \item{lbl}{A named list of the form `list(old_name = new_name)` to rename the
-variables in tab1. Must be of the same length as `var` col in tab1 (optional)}
+variables in tab1. Must be of the same length as the `vars` parameter (optional).}
 
 \item{opts_summ}{A list specifying additional options for summarizing variables.
 Currently supports the following options:
@@ -51,7 +51,9 @@ data frame.
 The summary statistics returned are mean (SD), median [Q1, Q3]
 and n (%) for numeric, non-normal numeric and factor variables respectively.
 If using weights, the function will only report proportions for the variables
-since counts are not meaningful due to weights not being normalized.
+since counts are not meaningful due to weights not being normalized. Furthermore,
+the sample size reported will be the effective sample size for each group calculated as
+sum(w)^2/sum(w^2), where w is the vector of weights.
 For weighted data, the standardized mean difference (SMD) can be calculated using
 the weighted or unweighted pooled variance in the denominator. However,
 using the weighted pooled variance may result in a paradoxical situation where
