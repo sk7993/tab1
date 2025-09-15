@@ -1,7 +1,7 @@
 Package: tab1
 Type: Package
 Title: Create Publication Quality Table 1
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person(
       "Karan", "Shah",
