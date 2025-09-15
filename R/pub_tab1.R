@@ -36,7 +36,6 @@ pub_tab1 <- function(tab1,
   if (bin_coll) {
     tab1_split <- split(tab1, factor(tab1$parent_var,
                                      levels = unique(tab1$parent_var)))
-    print(tab1_split)
     tab1_split <- lapply(tab1_split, function(df){
       n <- nrow(df)
       if (n==3 & df$type[1] == "factor") {

@@ -27,7 +27,9 @@
 #' variables in tab1. Must be of the same length as the `vars` parameter (optional).
 #' @param opts_summ A list specifying additional options for summarizing variables.
 #' Currently supports the following options:
-#'  -
+#'  - num_digits
+#'  - numnn_digits
+#'  - fac_digits
 #' @param opts_smd A list specifying options for SMD calculations. Supports the
 #' following options:
 #'  - denom: A character vector specifying how to handle denominators when
