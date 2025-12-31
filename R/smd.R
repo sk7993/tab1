@@ -312,6 +312,14 @@ compute_smd_fac <- function(x1, x2,
   diag(covar) <- dgl
 
   # Calculate ASD
-  smd <- sqrt(drop(t(d) %*% solve(covar) %*% d))
+  smd <- tryCatch(
+    sqrt(drop(t(d) %*% solve(covar) %*% d)),
+    error = function(e) {
+      cat(e)
+      return(NA)
+    })
+  if (is.na(smd)) {
+    return(NA)
+  }
   return(round(smd, digits))
 }
