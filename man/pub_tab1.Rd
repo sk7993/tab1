@@ -17,12 +17,12 @@ pub_tab1(
 
 \item{lbl_nm}{Summary statistic label for numeric variables.}
 
-\item{lbl_nn}{Summary statistic label for non-numeric variables.}
+\item{lbl_nn}{Summary statistic label for non-normal numeric variables.}
 
-\item{lbl_fac}{Summary statistic label for factor variables}
+\item{lbl_fac}{Summary statistic label for factor variables.}
 
-\item{bin_coll}{Logical variable indicating whether to collapse factor variables
-with two categories.}
+\item{bin_coll}{Logical indicating whether to collapse binary factor variables
+to a single row.}
 }
 \value{
 A flextable object.

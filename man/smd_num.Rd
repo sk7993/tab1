@@ -21,7 +21,7 @@ If not a factor, then the vector will be coerced.}
 \item{digits}{Integer indicating number of decimal places.}
 }
 \value{
-A named numeric vector of length `choose(unique(grp), 2)`.
+A named numeric vector with one SMD per group pair.
 }
 \description{
 Computes standardized mean difference for numeric variables.

@@ -4,7 +4,7 @@
 #' @param wts A numeric vector of weights (optional).
 #' @param digits Number of digits to round to (default is 2).
 #'
-#' @returns Returns (weighted) arithmetic mean of values in x.
+#' @returns A formatted string "mean (SD)".
 summ_num <- function(x, wts = NULL, digits = 2) {
 
   if (!(is.numeric(digits) & length(digits) == 1)) {
@@ -71,9 +71,9 @@ summ_num_nn <- function(x,
 #'
 #' @param x A factor vector.
 #' @param wts A non-negative vector of weights.
-#' @param digits Number of decimal places to use
+#' @param digits Number of decimal places to use.
 #'
-#' @returns (Weighted) proportions for values in `x`.
+#' @returns A named character vector with "n (%)" for each level, or just "%" if weighted.
 summ_fac <- function(x,
                      wts = NULL,
                      digits = 0){

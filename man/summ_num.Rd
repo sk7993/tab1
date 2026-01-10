@@ -14,7 +14,7 @@ summ_num(x, wts = NULL, digits = 2)
 \item{digits}{Number of digits to round to (default is 2).}
 }
 \value{
-Returns (weighted) arithmetic mean of values in x.
+A formatted string "mean (SD)".
 }
 \description{
 Summarize numeric variables

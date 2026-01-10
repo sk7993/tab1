@@ -32,7 +32,9 @@ variables in tab1. Must be of the same length as the `vars` parameter (optional)
 
 \item{opts_summ}{A list specifying additional options for summarizing variables.
 Currently supports the following options:
- -}
+ - num_digits
+ - numnn_digits
+ - fac_digits}
 
 \item{opts_smd}{A list specifying options for SMD calculations. Supports the
 following options:
@@ -70,8 +72,8 @@ opts_summ = list(num_digits = 3, numnn_digits = 2),
 opts_smd = list(abs = FALSE))
 # Weighted data
 set.seed(123)
-w <- rnorm(length(iris))
-# IMPORTANT: Note the difference in how denominator is calculated
-tab1(iris, "Species")
-tab1(iris, "Species", opts_smd = list(denom = "weighted"))
+w <- runif(nrow(iris))
+tab1(iris, "Species", wts = w)
+# Compare weighted vs unweighted denominator for SMD
+tab1(iris, "Species", wts = w, opts_smd = list(denom = "weighted"))
 }

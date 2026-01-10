@@ -22,7 +22,7 @@ tab1_ug(
 
 \item{num_digits}{Number of digits for numeric variables.}
 
-\item{numnn_digits}{Number of digits for sumamry of non-normal numeric variables.}
+\item{numnn_digits}{Number of digits for summary of non-normal numeric variables.}
 
 \item{fac_digits}{Number of digits for summaries of factor variables.}
 }

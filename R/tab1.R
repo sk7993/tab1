@@ -49,10 +49,10 @@
 #' opts_smd = list(abs = FALSE))
 #' # Weighted data
 #' set.seed(123)
-#' w <- rnorm(length(iris))
-#' # IMPORTANT: Note the difference in how denominator is calculated
-#' tab1(iris, "Species")
-#' tab1(iris, "Species", opts_smd = list(denom = "weighted"))
+#' w <- runif(nrow(iris))
+#' tab1(iris, "Species", wts = w)
+#' # Compare weighted vs unweighted denominator for SMD
+#' tab1(iris, "Species", wts = w, opts_smd = list(denom = "weighted"))
 tab1 <- function(data, grp,
                  wts = NULL,
                  vars = NULL,
@@ -208,7 +208,7 @@ tab1 <- function(data, grp,
 #' @param data A data frame.
 #' @param wts A non-negative numeric vector of weights.
 #' @param num_digits Number of digits for numeric variables.
-#' @param numnn_digits Number of digits for sumamry of non-normal numeric variables.
+#' @param numnn_digits Number of digits for summary of non-normal numeric variables.
 #' @param fac_digits Number of digits for summaries of factor variables.
 #' @param nonnormal Character vector specifying non-normal variables.
 #'

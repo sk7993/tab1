@@ -12,10 +12,10 @@
 #'
 #' @param tab1 Data frame output from `tab1` function.
 #' @param lbl_nm Summary statistic label for numeric variables.
-#' @param lbl_nn Summary statistic label for non-numeric variables.
-#' @param lbl_fac Summary statistic label for factor variables
-#' @param bin_coll Logical variable indicating whether to collapse factor variables
-#' with two categories.
+#' @param lbl_nn Summary statistic label for non-normal numeric variables.
+#' @param lbl_fac Summary statistic label for factor variables.
+#' @param bin_coll Logical indicating whether to collapse binary factor variables
+#' to a single row.
 #'
 #' @returns A flextable object.
 #'

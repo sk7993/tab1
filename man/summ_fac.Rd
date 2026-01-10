@@ -11,10 +11,10 @@ summ_fac(x, wts = NULL, digits = 0)
 
 \item{wts}{A non-negative vector of weights.}
 
-\item{digits}{Number of decimal places to use}
+\item{digits}{Number of decimal places to use.}
 }
 \value{
-(Weighted) proportions for values in `x`.
+A named character vector with "n (%)" for each level, or just "%" if weighted.
 }
 \description{
 Summarize categorical variables

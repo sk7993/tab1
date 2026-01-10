@@ -121,7 +121,7 @@ smd <- function(data, grp,
 #' @param denom Specifies how the denominator is calculated.
 #' @param digits Integer indicating number of decimal places.
 #'
-#' @returns A named numeric vector of length `choose(unique(grp), 2)`.
+#' @returns A named numeric vector with one SMD per group pair.
 smd_num <- function(x, grp,
                     wts = NULL, denom = "unweighted",
                     abs = TRUE, digits = 3){
@@ -203,12 +203,14 @@ compute_smd_num <- function(x1, x2,
 
 #' SMD for skewed/non-normal numeric variables
 #'
-#' @param x Numeric vector of data values
+#' Computes SMD using ranks of the data values rather than the values themselves.
+#'
+#' @param x Numeric vector of data values.
 #' @param grp A factor of same length as `x` specifying groups.
-#' If not a factor, then the vector will be coerced.
+#' If not a factor, the vector will be coerced.
 #' @param ... Additional arguments passed to `smd_num`.
 #'
-#' @returns A named numeric vector
+#' @returns A named numeric vector with one SMD per group pair.
 smd_num_nn <- function(x, grp, ...){
 
   return(smd_num(rank(x), grp, ...))
