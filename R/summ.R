@@ -96,7 +96,7 @@ summ_fac <- function(x,
                  prop) |>
       stats::setNames(names(tab))
   } else {
-    s <- sprintf("%s", prop) |>
+    s <- sprintf("%s%%", prop) |>
       stats::setNames(names(tab))
   }
 
